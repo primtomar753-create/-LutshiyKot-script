@@ -57,7 +57,7 @@ wmt.Font=Enum.Font.GothamBold wmt.TextXAlignment=Enum.TextXAlignment.Left wmt.ZI
 local GL={}
 for i=1,5 do
 local g=Instance.new("Frame",gui)
-g.Size=UDim2.new(0,460+i12,0,340+i12)g.Position=UDim2.new(.5,-(230+i6),.5,-(170+i6))
+g.Size=UDim2.new(0,460+i*12,0,340+i*12)g.Position=UDim2.new(.5,-(230+i*6),.5,-(170+i*6))
 g.BackgroundColor3=Color3.fromRGB(200,100,255)g.BackgroundTransparency=.9+i*.012 g.BorderSizePixel=0 g.ZIndex=0
 Instance.new("UICorner",g).CornerRadius=UDim.new(0,22)
 table.insert(GL,g)
@@ -68,7 +68,7 @@ MF.Size=UDim2.new(0,460,0,340)MF.Position=UDim2.new(.5,-230,.5,-170)MF.Backgroun
 MF.BackgroundTransparency=.15 MF.BorderSizePixel=0 MF.Active=true MF.Draggable=true MF.ZIndex=2
 Instance.new("UICorner",MF).CornerRadius=UDim.new(0,14)
 MF:GetPropertyChangedSignal("Position"):Connect(function()
-for i,g in ipairs(GL) do g.Position=MF.Position-UDim2.new(0,6i,0,6i) end
+for i,g in ipairs(GL) do g.Position=MF.Position-UDim2.new(0,6*i,0,6*i) end
 end)
 local GR=Instance.new("UIGradient",MF)
 GR.Color=ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(150,40,230)),ColorSequenceKeypoint.new(.5,Color3.fromRGB(70,20,150)),ColorSequenceKeypoint.new(1,Color3.fromRGB(120,40,200))})
@@ -86,16 +86,16 @@ local t=0
 while MF.Parent do
 t=t+.05
 local r=(math.sin(t)+1)/2 local g=(math.sin(t+2)+1)/2 local b=(math.sin(t+4)+1)/2
-N1.Color=Color3.fromRGB(math.floor(180+75r),math.floor(80+120g),math.floor(220+35b))
-N2.Color=Color3.fromRGB(math.floor(100+100b),math.floor(150+100r),math.floor(220+35g))
-N3.Color=Color3.fromRGB(math.floor(220+35b),math.floor(80+120g),math.floor(200+55r))
-GR.Color=ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(math.floor(120+50r),math.floor(30+30g),math.floor(200+40b))),ColorSequenceKeypoint.new(.5,Color3.fromRGB(50,15,120)),ColorSequenceKeypoint.new(1,Color3.fromRGB(math.floor(100+50g),math.floor(30+30b),math.floor(170+50r)))})
-GR.Rotation=(t25)%360
-IG.BackgroundColor3=Color3.fromRGB(math.floor(150+80r),math.floor(60+100g),math.floor(200+55b))
-IG.BackgroundTransparency=.78+.08r
-MF.BackgroundColor3=Color3.fromRGB(math.floor(45+30r),math.floor(15+15g),math.floor(90+40b))
+N1.Color=Color3.fromRGB(math.floor(180+75*r),math.floor(80+120*g),math.floor(220+35*b))
+N2.Color=Color3.fromRGB(math.floor(100+100*b),math.floor(150+100*r),math.floor(220+35*g))
+N3.Color=Color3.fromRGB(math.floor(220+35*b),math.floor(80+120*g),math.floor(200+55*r))
+GR.Color=ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(math.floor(120+50*r),math.floor(30+30*g),math.floor(200+40*b))),ColorSequenceKeypoint.new(.5,Color3.fromRGB(50,15,120)),ColorSequenceKeypoint.new(1,Color3.fromRGB(math.floor(100+50*g),math.floor(30+30*b),math.floor(170+50*r)))})
+GR.Rotation=(t*25)%360
+IG.BackgroundColor3=Color3.fromRGB(math.floor(150+80*r),math.floor(60+100*g),math.floor(200+55*b))
+IG.BackgroundTransparency=.78+.08*r
+MF.BackgroundColor3=Color3.fromRGB(math.floor(45+30*r),math.floor(15+15*g),math.floor(90+40*b))
 for i,gl in ipairs(GL) do
-gl.BackgroundColor3=Color3.fromRGB(math.floor(140+100r),math.floor(60+100g),math.floor(200+55b))
+gl.BackgroundColor3=Color3.fromRGB(math.floor(140+100*r),math.floor(60+100*g),math.floor(200+55*b))
 gl.BackgroundTransparency=.86+i*.015+.04*(1-r)
 end
 R.Heartbeat:Wait()
@@ -152,10 +152,10 @@ local function setMin(m)
 min=m
 if m then
 MF.Size=UDim2.new(0,460,0,42)SB.Visible=false CT.Visible=false IG.Visible=false
-for i,g in ipairs(GL) do g.Size=UDim2.new(0,460+i12,0,42+i12) g.Position=UDim2.new(.5,-(230+i6),.5,-(21+i6)) end
+for i,g in ipairs(GL) do g.Size=UDim2.new(0,460+i*12,0,42+i*12) g.Position=UDim2.new(.5,-(230+i*6),.5,-(21+i*6)) end
 else
 MF.Size=UDim2.new(0,460,0,340)SB.Visible=true CT.Visible=true IG.Visible=true
-for i,g in ipairs(GL) do g.Size=UDim2.new(0,460+i12,0,340+i12) g.Position=UDim2.new(.5,-(230+i6),.5,-(170+i6)) end
+for i,g in ipairs(GL) do g.Size=UDim2.new(0,460+i*12,0,340+i*12) g.Position=UDim2.new(.5,-(230+i*6),.5,-(170+i*6)) end
 end
 end
 mkb("—",-90,function()setMin(not min)end)
@@ -288,7 +288,11 @@ end
 local HSnd={Click="rbxassetid://6042053626",Bell="rbxassetid://6042054027",Minecraft="rbxassetid://6042054196",Pew="rbxassetid://6042054652",Bubble="rbxassetid://6042054764"}
 local KSnd={Explosion="rbxassetid://6042055134",Ding="rbxassetid://6042055325",Bruh="rbxassetid://6042055494",Vine="rbxassetid://6042055656",Sniper="rbxassetid://6042055794"}
 local function pSnd(id,v)
-local s=Instance.new("Sound")s.SoundId=id s.Volume=v or 1 s.Parent=S1 s:Play()D:AddItem(s,5)
+if not id or id=="" then return end
+local s=Instance.new("Sound")
+s.SoundId=id s.Volume=v or 1 s.Parent=S1
+pcall(function() s:Play() end)
+D:AddItem(s,5)
 end
 
 -- ВКЛАДКИ
@@ -462,14 +466,14 @@ for i,l in ipairs(layers) do
 local p=Instance.new("Part",hd)
 p.Name="NCH_Layer"p.Shape=Enum.PartType.Cylinder p.Size=Vector3.new(.25,l.s,l.s)
 p.Material=Enum.Material.Neon p.CanCollide=false p.Massless=true p.CastShadow=false
-p.CFrame=hd.CFrame*CFrame.new(0,l.y,0)CFrame.Angles(0,0,math.rad(90))
+p.CFrame=hd.CFrame*CFrame.new(0,l.y,0)*CFrame.Angles(0,0,math.rad(90))
 local w=Instance.new("WeldConstraint",p)w.Part0=p w.Part1=hd
 if i==1 then local li=Instance.new("PointLight",p)li.Brightness=3 li.Range=15 li.Shadows=false end
 end
 end
 for _,p in pairs(hd:GetChildren())do
 if p.Name=="NCH_Layer"then
-p.Color=Color3.fromHSV((hue+p.Position.Y.05)%1,1,1)
+p.Color=Color3.fromHSV((hue+p.Position.Y*.05)%1,1,1)
 local li=p:FindFirstChildOfClass("PointLight")if li then li.Color=p.Color end
 end
 end
@@ -554,206 +558,89 @@ if S.Time then L.ClockTime=S.TimeV end
 end
 end)
 
--- SOUND/KILL FIX
-
-local function pSnd(id,v)
-if not id or id=="" then return end
-
-local s=Instance.new("Sound")  
-s.SoundId=id  
-s.Volume=v or 1  
-s.PlaybackSpeed=1  
-s.RollOffMaxDistance=10000  
-s.Parent=S1  
-
-pcall(function()  
-    game:GetService("ContentProvider"):PreloadAsync({s})  
-end)  
-
-pcall(function()  
-    s:Play()  
-end)  
-
-D:AddItem(s,6)
-
-end
-
 -- HIT SOUND
 local watchedHum={}
-
 local function watchHumanoid(p,h)
 if p==LP or not h or watchedHum[h] then return end
 watchedHum[h]=true
-
-local last=h.Health  
-
-h.HealthChanged:Connect(function(newHP)  
-    if newHP<last and newHP>0 and S.HSnd then  
-        local damage=last-newHP  
-
-        if damage>0 then  
-            pSnd(HSnd[S.HSndT],.5)  
-        end  
-    end  
-
-    last=newHP  
-end)  
-
-h.Destroying:Connect(function()  
-    watchedHum[h]=nil  
-end)
-
+local last=h.Health
+h.HealthChanged:Connect(function(newHP)
+if newHP<last and newHP>0 and S.HSnd then
+local damage=last-newHP
+if damage>0 then pSnd(HSnd[S.HSndT],.5) end
 end
-
+last=newHP
+end)
+h.Destroying:Connect(function() watchedHum[h]=nil end)
+end
 local function watchPlayer(p)
 if p==LP then return end
-
-local function setup(c)  
-    local h=c:WaitForChild("Humanoid",5)  
-    if not h then return end  
-
-    watchHumanoid(p,h)  
-
-    h.Died:Connect(function()  
-        if S.KSnd then  
-            pSnd(KSnd[S.KSndT],.7)  
-        end  
-    end)  
-end  
-
-if p.Character then  
-    task.spawn(setup,p.Character)  
-end  
-
+local function setup(c)
+local h=c:WaitForChild("Humanoid",5)
+if not h then return end
+watchHumanoid(p,h)
+h.Died:Connect(function()
+if S.KSnd then pSnd(KSnd[S.KSndT],.7) end
+end)
+end
+if p.Character then task.spawn(setup,p.Character) end
 p.CharacterAdded:Connect(setup)
-
 end
-
-for _,p in ipairs(P:GetPlayers()) do
-watchPlayer(p)
-end
-
+for _,p in ipairs(P:GetPlayers()) do watchPlayer(p) end
 P.PlayerAdded:Connect(watchPlayer)
 
 -- KILL EFFECT
 local function kFX(pos)
 if not S.KEff then return end
-
-local pt=Instance.new("Part")  
-pt.Size=Vector3.new(1,1,1)  
-pt.Position=pos  
-pt.Anchored=true  
-pt.CanCollide=false  
-pt.Transparency=1  
-pt.Parent=workspace  
-
-if S.KEffT=="Explosion" then  
-    local e=Instance.new("Explosion")  
-    e.Position=pos  
-    e.BlastRadius=8  
-    e.BlastPressure=0  
-    e.ExplosionType=Enum.ExplosionType.NoCraters  
-    e.Parent=workspace  
-
-    D:AddItem(pt,.1)  
-
-elseif S.KEffT=="Fire" then  
-    local f=Instance.new("Fire")  
-    f.Size=8  
-    f.Heat=5  
-    f.Color=Color3.fromRGB(255,100,50)  
-    f.SecondaryColor=Color3.fromRGB(255,200,50)  
-    f.Parent=pt  
-
-    D:AddItem(pt,2)  
-
-elseif S.KEffT=="Lightning" then  
-    local a1=Instance.new("Attachment",pt)  
-    local a2=Instance.new("Attachment",pt)  
-    a2.Position=Vector3.new(0,30,0)  
-
-    local b=Instance.new("Beam",pt)  
-    b.Attachment0=a1  
-    b.Attachment1=a2  
-    b.Width0=.5  
-    b.Width1=.5  
-    b.Color=ColorSequence.new(  
-        Color3.fromRGB(100,200,255)  
-    )  
-    b.LightEmission=1  
-
-    D:AddItem(pt,.3)  
-
-elseif S.KEffT=="Confetti" then  
-    local e=Instance.new("ParticleEmitter",pt)  
-    e.Texture="rbxasset://textures/particles/sparkles_main.dds"  
-    e.Lifetime=NumberRange.new(1,2)  
-    e.Speed=NumberRange.new(20,40)  
-    e.SpreadAngle=Vector2.new(180,180)  
-    e.LightEmission=1  
-    e.Color=ColorSequence.new(  
-        Color3.fromRGB(255,100,100)  
-    )  
-    e.Size=NumberSequence.new(1)  
-    e:Emit(50)  
-
-    D:AddItem(pt,3)  
-
-elseif S.KEffT=="Portal" then  
-    local r=Instance.new("Part")  
-    r.Shape=Enum.PartType.Cylinder  
-    r.Size=Vector3.new(.5,10,10)  
-    r.Color=Color3.fromRGB(180,100,255)  
-    r.Material=Enum.Material.Neon  
-    r.Anchored=true  
-    r.CanCollide=false  
-    r.CFrame=CFrame.new(pos)*CFrame.Angles(0,0,math.rad(90))  
-    r.Parent=workspace  
-
-    Tw:Create(  
-        r,  
-        TweenInfo.new(1),  
-        {  
-            Size=Vector3.new(.5,20,20),  
-            Transparency=1  
-        }  
-    ):Play()  
-
-    D:AddItem(r,1.5)  
-    D:AddItem(pt,.1)  
+local pt=Instance.new("Part")
+pt.Size=Vector3.new(1,1,1)pt.Position=pos pt.Anchored=true pt.CanCollide=false pt.Transparency=1 pt.Parent=workspace
+if S.KEffT=="Explosion" then
+local e=Instance.new("Explosion",workspace)
+e.Position=pos e.BlastRadius=8 e.BlastPressure=0 e.ExplosionType=Enum.ExplosionType.NoCraters
+D:AddItem(pt,.1)
+elseif S.KEffT=="Fire" then
+local f=Instance.new("Fire",pt)
+f.Size=8 f.Heat=5 f.Color=Color3.fromRGB(255,100,50)f.SecondaryColor=Color3.fromRGB(255,200,50)
+D:AddItem(pt,2)
+elseif S.KEffT=="Lightning" then
+local a1=Instance.new("Attachment",pt)local a2=Instance.new("Attachment",pt)
+a2.Position=Vector3.new(0,30,0)
+local b=Instance.new("Beam",pt)
+b.Attachment0=a1 b.Attachment1=a2 b.Width0=.5 b.Width1=.5
+b.Color=ColorSequence.new(Color3.fromRGB(100,200,255))b.LightEmission=1
+D:AddItem(pt,.3)
+elseif S.KEffT=="Confetti" then
+local e=Instance.new("ParticleEmitter",pt)
+e.Texture="rbxasset://textures/particles/sparkles_main.dds"
+e.Lifetime=NumberRange.new(1,2)e.Speed=NumberRange.new(20,40)
+e.SpreadAngle=Vector2.new(180,180)e.LightEmission=1
+e.Color=ColorSequence.new(Color3.fromRGB(255,100,100))
+e.Size=NumberSequence.new(1)e:Emit(50)
+D:AddItem(pt,3)
+elseif S.KEffT=="Portal" then
+local r=Instance.new("Part")
+r.Shape=Enum.PartType.Cylinder r.Size=Vector3.new(.5,10,10)
+r.Color=Color3.fromRGB(180,100,255)r.Material=Enum.Material.Neon
+r.Anchored=true r.CanCollide=false
+r.CFrame=CFrame.new(pos)*CFrame.Angles(0,0,math.rad(90))r.Parent=workspace
+Tw:Create(r,TweenInfo.new(1),{Size=Vector3.new(.5,20,20),Transparency=1}):Play()
+D:AddItem(r,1.5)D:AddItem(pt,.1)
 end
-
 end
-
--- KILL EFFECT WATCHER
 local function setupKillEffect(p)
 if p==LP then return end
-
-local function setup(c)  
-    local h=c:WaitForChild("Humanoid",5)  
-    if not h then return end  
-
-    h.Died:Connect(function()  
-        local root=c:FindFirstChild("HumanoidRootPart")  
-
-        if root then  
-            kFX(root.Position)  
-        end  
-    end)  
-end  
-
-if p.Character then  
-    task.spawn(setup,p.Character)  
-end  
-
+local function setup(c)
+local h=c:WaitForChild("Humanoid",5)
+if not h then return end
+h.Died:Connect(function()
+local root=c:FindFirstChild("HumanoidRootPart")
+if root then kFX(root.Position) end
+end)
+end
+if p.Character then task.spawn(setup,p.Character) end
 p.CharacterAdded:Connect(setup)
-
 end
-
-for _,p in ipairs(P:GetPlayers()) do
-setupKillEffect(p)
-end
-
+for _,p in ipairs(P:GetPlayers()) do setupKillEffect(p) end
 P.PlayerAdded:Connect(setupKillEffect)
 
 -- AURA
@@ -897,17 +784,17 @@ local c=curT.Parent if not c then return end
 local hd=c:FindFirstChild("Head")local hrp=c:FindFirstChild("HumanoidRootPart")local hum=c:FindFirstChildOfClass("Humanoid")
 if not hd or not hrp or not hum then return end
 local col=C[S.TgtCol]or C.Yellow
-local pulse=S.TgtPulse and(.75+.25math.sin(tick()6))or 1
+local pulse=S.TgtPulse and(.75+.25*math.sin(tick()*6))or 1
 local fa=tFade
 local tp,o1=Cam:WorldToViewportPoint(hd.Position+Vector3.new(0,1.8,0))
 local bp,o2=Cam:WorldToViewportPoint(hrp.Position-Vector3.new(0,3,0))
 if not(o1 and o2)then return end
-local h=math.abs(tp.Y-bp.Y)+25 local w=h.6
+local h=math.abs(tp.Y-bp.Y)+25 local w=h*.6
 local bx=tp.X-w/2 local by=tp.Y-12
 local ex=bx+w local ey=by+h
-tBOut.Size=Vector2.new(w+6,h+6)tBOut.Position=Vector2.new(bx-3,by-3)tBOut.Color=col tBOut.Transparency=fapulse tBOut.Visible=true
+tBOut.Size=Vector2.new(w+6,h+6)tBOut.Position=Vector2.new(bx-3,by-3)tBOut.Color=col tBOut.Transparency=fa*pulse tBOut.Visible=true
 tBIn.Size=Vector2.new(w,h)tBIn.Position=Vector2.new(bx,by)tBIn.Color=Color3.fromRGB(255,255,255)tBIn.Transparency=fa*.7 tBIn.Visible=true
-local cl2=math.min(w,h).22
+local cl2=math.min(w,h)*.22
 local cd={{Vector2.new(bx,by),Vector2.new(bx+cl2,by)},{Vector2.new(bx,by),Vector2.new(bx,by+cl2)},
 {Vector2.new(ex,by),Vector2.new(ex-cl2,by)},{Vector2.new(ex,by),Vector2.new(ex,by+cl2)},
 {Vector2.new(bx,ey),Vector2.new(bx+cl2,ey)},{Vector2.new(bx,ey),Vector2.new(bx,ey-cl2)},
@@ -915,23 +802,23 @@ local cd={{Vector2.new(bx,by),Vector2.new(bx+cl2,by)},{Vector2.new(bx,by),Vector
 for i,cr in ipairs(cd)do tCn[i].From=cr[1]tCn[i].To=cr[2]tCn[i].Color=col tCn[i].Transparency=fa tCn[i].Visible=true end
 local hp=hum.Health/hum.MaxHealth
 local hpY=by-10
-tHPBg.Size=Vector2.new(w,5)tHPBg.Position=Vector2.new(bx,hpY)tHPBg.Transparency=fa.4 tHPBg.Visible=true
-tHPFg.Size=Vector2.new(whp,5)tHPFg.Position=Vector2.new(bx,hpY)
-tHPFg.Color=Color3.fromRGB(math.floor(255(1-hp)),math.floor(255hp),60)tHPFg.Transparency=fa.95 tHPFg.Visible=true
+tHPBg.Size=Vector2.new(w,5)tHPBg.Position=Vector2.new(bx,hpY)tHPBg.Transparency=fa*.4 tHPBg.Visible=true
+tHPFg.Size=Vector2.new(w*hp,5)tHPFg.Position=Vector2.new(bx,hpY)
+tHPFg.Color=Color3.fromRGB(math.floor(255*(1-hp)),math.floor(255*hp),60)tHPFg.Transparency=fa*.95 tHPFg.Visible=true
 tHPT.Text=math.floor(hum.Health).." ❤"tHPT.Position=Vector2.new(tp.X,hpY-18)tHPT.Transparency=fa tHPT.Visible=true
 tNm.Text="🎯 "..c.Name tNm.Position=Vector2.new(tp.X,hpY-38)tNm.Color=col tNm.Transparency=fa tNm.Visible=true
 local dist=(Cam.CFrame.Position-hrp.Position).Magnitude
 tDs.Text=string.format("%d studs",math.floor(dist))tDs.Position=Vector2.new(tp.X,ey+5)tDs.Transparency=fa tDs.Visible=true
 if S.TgtArrow then
-local aS=10+4math.sin(tick()8)local aY=hpY-58
-tAr.PointA=Vector2.new(tp.X,aY+aS)tAr.PointB=Vector2.new(tp.X-aS.7,aY)tAr.PointC=Vector2.new(tp.X+aS.7,aY)
+local aS=10+4*math.sin(tick()*8)local aY=hpY-58
+tAr.PointA=Vector2.new(tp.X,aY+aS)tAr.PointB=Vector2.new(tp.X-aS*.7,aY)tAr.PointC=Vector2.new(tp.X+aS*.7,aY)
 tAr.Color=col tAr.Transparency=fa tAr.Visible=true
 else tAr.Visible=false end
-tCir.Position=Vector2.new(tp.X,tp.Y+15)tCir.Radius=12+3math.sin(tick()4)tCir.Color=col tCir.Transparency=fa.8 tCir.Visible=true
+tCir.Position=Vector2.new(tp.X,tp.Y+15)tCir.Radius=12+3*math.sin(tick()*4)tCir.Color=col tCir.Transparency=fa*.8 tCir.Visible=true
 tHD.Position=Vector2.new(tp.X,tp.Y+15)tHD.Color=col tHD.Transparency=fa tHD.Visible=true
 if S.TgtTrail then
 local vp=Cam.ViewportSize
-tTrl.From=Vector2.new(vp.X/2,vp.Y)tTrl.To=Vector2.new(tp.X,by+h/2)tTrl.Color=col tTrl.Transparency=fa.6 tTrl.Visible=true
+tTrl.From=Vector2.new(vp.X/2,vp.Y)tTrl.To=Vector2.new(tp.X,by+h/2)tTrl.Color=col tTrl.Transparency=fa*.6 tTrl.Visible=true
 else tTrl.Visible=false end
 end)
 
@@ -991,9 +878,9 @@ if not onScr then
 if not AR[p]then AR[p]=Drawing.new("Triangle")AR[p].Thickness=1 AR[p].Filled=true AR[p].Color=Color3.fromRGB(255,60,60)AR[p].Transparency=1 end
 local a=math.atan2(dir.Y,dir.X)local r=150
 local pos=Vector2.new(cs.X+math.cos(a)*r,cs.Y+math.sin(a)*r)local sz=15
-AR[p].PointA=pos+Vector2.new(math.cos(a)*sz,math.sin(a)sz)
-AR[p].PointB=pos+Vector2.new(math.cos(a+2.5)sz,math.sin(a+2.5)sz)
-AR[p].PointC=pos+Vector2.new(math.cos(a-2.5)sz,math.sin(a-2.5)sz)
+AR[p].PointA=pos+Vector2.new(math.cos(a)*sz,math.sin(a)*sz)
+AR[p].PointB=pos+Vector2.new(math.cos(a+2.5)*sz,math.sin(a+2.5)*sz)
+AR[p].PointC=pos+Vector2.new(math.cos(a-2.5)*sz,math.sin(a-2.5)*sz)
 AR[p].Visible=true
 elseif AR[p]then AR[p].Visible=false end
 elseif AR[p]then AR[p].Visible=false end
@@ -1004,7 +891,7 @@ local tS=Cam:WorldToViewportPoint(hrp.Position)
 BM[p].From=Vector2.new(vp.X/2,vp.Y-30)BM[p].To=Vector2.new(tS.X,tS.Y)BM[p].Visible=true
 elseif BM[p]then BM[p].Visible=false end
 if o1 and o2 then
-local h=math.abs(tp.Y-bp.Y)local w=h.55
+local h=math.abs(tp.Y-bp.Y)local w=h*.55
 local bx=tp.X-w/2 local by=tp.Y
 if S.Box then
 if S.BoxStyle=="Filled"then
@@ -1059,8 +946,8 @@ HPB[p]=Drawing.new("Square")HPB[p].Thickness=1 HPB[p].Filled=true
 end
 local hp=hum.Health/hum.MaxHealth
 HPG[p].Size=Vector2.new(3,h)HPG[p].Position=Vector2.new(bx-6,tp.Y)HPG[p].Visible=true
-HPB[p].Size=Vector2.new(3,hhp)HPB[p].Position=Vector2.new(bx-6,tp.Y+h(1-hp))
-HPB[p].Color=Color3.fromRGB(math.floor(255(1-hp)),math.floor(255hp),60)HPB[p].Visible=true
+HPB[p].Size=Vector2.new(3,h*hp)HPB[p].Position=Vector2.new(bx-6,tp.Y+h*(1-hp))
+HPB[p].Color=Color3.fromRGB(math.floor(255*(1-hp)),math.floor(255*hp),60)HPB[p].Visible=true
 else
 if HPB[p]then HPB[p].Visible=false end
 if HPG[p]then HPG[p].Visible=false end
