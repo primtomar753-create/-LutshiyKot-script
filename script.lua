@@ -19,8 +19,16 @@ FB=false,NF=false,ShowFov=true,ShowCross=true,CrossSty="Dot",WM=true,FovCol="Pur
 HSnd=false,HSndT="Click",KSnd=false,KSndT="Explosion",KEff=false,KEffT="Explosion",Aura=false,AuraT="Fire",AuraR=40,
 SpinBot=false,SpinBotSpeed=10,ThirdPerson=false,ThirdPersonDist=10,
 Hat=true,Rainbow=false,CamFOVe=false,CamFOV=70,
-Snow=false,SnowT="Normal",Sky=false,SkyT="Night",Time=false,TimeV=14,Bloom=false,BloomI=1.5,CC=false,CCM="None",SunR=false,Atm=false,
+Snow=false,SnowT="Normal",Sky=false,SkyPreset="None",Time=false,TimeV=14,Bloom=false,BloomI=1.5,CC=false,CCM="None",SunR=false,Atm=false,
 Spd=16,Jmp=50,IJmp=false,Fly=false,Noclip=false,FlyS=50,AAFK=false,AutoR=false,FPS=true,Ping=true,Clock=false,
+FPSUnlocker=false,FPSLimit=240,
+AuraColor="Purple",AuraShape="Sphere",AuraSize=5,
+KillFeed=true,HitMarker=true,DamageNumbers=true,
+HatType="China",
+AimAssist=false,AimAssistSmooth=0.5,AimAssistFOV=150,AimAssistPart="Head",
+TriggerBot=false,TriggerDelay=0.2,
+NoRecoil=false,NoSpread=false,FastReload=false,
+AutoParry=false,AutoParryRange=8,AutoParryKey="F",
 }
 local C={Purple=Color3.fromRGB(180,100,255),Red=Color3.fromRGB(255,80,80),Blue=Color3.fromRGB(80,150,255),
 Green=Color3.fromRGB(80,255,120),Yellow=Color3.fromRGB(255,220,80),White=Color3.fromRGB(255,255,255),
@@ -30,6 +38,8 @@ local gui,MF,CT,SB,IG,OB
 local HLS,BOX,BF,NAM,DST,HPB,HPG,TRC={},{},{},{},{},{},{},{}
 local HD,SK,AR,BM,CH={},{},{},{},{}
 local tabs={}
+local dmgDrawings,hitMarkerDrawings={},{}
+local kfY=0
 
 pcall(function() gui=Instance.new("ScreenGui")gui.Name="Gui"gui.ResetOnSpawn=false gui.ZIndexBehavior=Enum.ZIndexBehavior.Sibling gui.Parent=game:GetService("CoreGui") end)
 if not gui or not gui.Parent then gui=Instance.new("ScreenGui")gui.Name="Gui"gui.ResetOnSpawn=false gui.Parent=LP:WaitForChild("PlayerGui") end
@@ -63,7 +73,7 @@ wmMoon.Font=Enum.Font.GothamBold wmMoon.TextColor3=Color3.fromRGB(230,230,250)
 wmMoon.TextXAlignment=Enum.TextXAlignment.Left wmMoon.ZIndex=71
 local wmName=Instance.new("TextLabel",wmFrame)
 wmName.Size=UDim2.new(0,80,1,0)wmName.Position=UDim2.new(0,32,0,0)
-wmName.BackgroundTransparency=1 wmName.Text="PrimDLC" wmName.TextSize=14
+wmName.BackgroundTransparency=1 wmName.Text="PrimDLC v14" wmName.TextSize=14
 wmName.Font=Enum.Font.GothamBold wmName.TextColor3=Color3.fromRGB(240,240,255)
 wmName.TextXAlignment=Enum.TextXAlignment.Left wmName.ZIndex=71
 local d1=Instance.new("Frame",wmFrame)
@@ -342,6 +352,7 @@ pcall(function() s:Play() end)
 D:AddItem(s,5)
 end
 
+-- ВКЛАДКИ
 table.insert(tabs,mkT("Main","🏠",function()
 clr()
 mkSec("Aimbot")mkC("Aimbot",S.Aim,function(v)S.Aim=v end)mkC("Auto Shoot",S.AutoS,function(v)S.AutoS=v end)
@@ -349,6 +360,26 @@ mkC("Prediction",S.Pred,function(v)S.Pred=v end)mkC("Wall Check",S.VisChk,functi
 mkSec("ESP")mkC("ESP",S.ESP,function(v)S.ESP=v end)mkC("Box",S.Box,function(v)S.Box=v end)
 mkC("Highlight",S.HL,function(v)S.HL=v end)mkC("Target ESP",S.TgtE,function(v)S.TgtE=v end)mkC("Chams",S.Chams,function(v)S.Chams=v end)
 end))
+
+table.insert(tabs,mkT("Legit","🕊",function()
+clr()
+mkSec("Aim Assist (Legit)")
+mkC("Enable Aim Assist",S.AimAssist,function(v)S.AimAssist=v end)
+mkSl("Assist Smoothness",0,100,S.AimAssistSmooth*100,function(v)S.AimAssistSmooth=v/100 end)
+mkSl("Assist FOV",50,400,S.AimAssistFOV,function(v)S.AimAssistFOV=v end)
+mkDr("Assist Part",{"Head","UpperTorso","HumanoidRootPart"},S.AimAssistPart,function(v)S.AimAssistPart=v end)
+mkSec("Trigger Bot")
+mkC("Enable Trigger Bot",S.TriggerBot,function(v)S.TriggerBot=v end)
+mkSl("Trigger Delay ms",0,500,S.TriggerDelay*1000,function(v)S.TriggerDelay=v/1000 end)
+mkSec("Gun Mods")
+mkC("No Recoil",S.NoRecoil,function(v)S.NoRecoil=v end)
+mkC("No Spread",S.NoSpread,function(v)S.NoSpread=v end)
+mkC("Fast Reload",S.FastReload,function(v)S.FastReload=v end)
+mkSec("Auto Parry")
+mkC("Enable Auto Parry",S.AutoParry,function(v)S.AutoParry=v end)
+mkSl("Parry Range",3,20,S.AutoParryRange,function(v)S.AutoParryRange=v end)
+end))
+
 table.insert(tabs,mkT("Target","🎯",function()
 clr()
 mkSec("Target ESP (CS Style)")
@@ -357,6 +388,7 @@ mkC("HP",S.TgtHP,function(v)S.TgtHP=v end)mkC("Distance",S.TgtDist,function(v)S.
 mkC("Only Locked",S.TgtLock,function(v)S.TgtLock=v end)
 mkSec("Style")mkDr("Color",{"Red","Yellow","Green","Cyan","White","Purple"},S.TgtCol,function(v)S.TgtCol=v end)
 end))
+
 table.insert(tabs,mkT("Aim","⚔",function()
 clr()
 mkSec("Aimbot")mkC("Aimbot",S.Aim,function(v)S.Aim=v end)mkC("Prediction",S.Pred,function(v)S.Pred=v end)
@@ -366,6 +398,7 @@ mkDr("FOV Color",{"Purple","Red","Blue","Green","Yellow","White","Pink","Cyan","
 mkSl("FOV",50,800,S.FOV,function(v)S.FOV=v end)mkSl("Smooth",0,95,S.Smooth*100,function(v)S.Smooth=v/100 end)
 mkSl("Max Dist",50,2000,S.MaxD,function(v)S.MaxD=v end)
 end))
+
 table.insert(tabs,mkT("Visual","🎨",function()
 clr()
 mkSec("ESP")mkC("ESP",S.ESP,function(v)S.ESP=v end)mkC("Box",S.Box,function(v)S.Box=v end)
@@ -382,12 +415,12 @@ mkDr("Crosshair Style",{"Dot","Cross","Circle","X"},S.CrossSty,function(v)S.Cros
 mkSec("Watermark")mkC("Show Watermark",S.WM,function(v)wmFrame.Visible=v end)
 mkC("FPS",S.FPS,function(v)S.FPS=v end)mkC("Ping",S.Ping,function(v)S.Ping=v end)
 end))
+
 table.insert(tabs,mkT("FX","✨",function()
 clr()
 mkSec("Weather")mkC("Snow",S.Snow,function(v)S.Snow=v end)
 mkDr("Snow Type",{"Normal","Neon","Gold"},S.SnowT,function(v)S.SnowT=v end)
-mkSec("Sky")mkC("Change Sky",S.Sky,function(v)S.Sky=v end)
-mkDr("Sky Type",{"Night","Sunset","Space","Red"},S.SkyT,function(v)S.SkyT=v end)
+mkSec("Sky")mkC("Enable Sky Change",S.Sky,function(v)S.Sky=v end)
 mkSec("Time")mkC("Change Time",S.Time,function(v)S.Time=v end)
 mkSl("Clock Time",0,24,S.TimeV,function(v)S.TimeV=v end)
 mkSec("Post-FX")mkC("Bloom",S.Bloom,function(v)S.Bloom=v end)
@@ -396,6 +429,25 @@ mkC("Color Correction",S.CC,function(v)S.CC=v end)
 mkDr("CC Mode",{"None","Red","Blue","Green","Matrix","Cinematic"},S.CCM,function(v)S.CCM=v end)
 mkC("Sun Rays",S.SunR,function(v)S.SunR=v end)mkC("Atmosphere",S.Atm,function(v)S.Atm=v end)
 end))
+
+table.insert(tabs,mkT("ExtraV","💠",function()
+clr()
+mkSec("FPS")
+mkC("FPS Unlocker",S.FPSUnlocker,function(v)S.FPSUnlocker=v end)
+mkSl("FPS Limit",60,360,S.FPSLimit,function(v)S.FPSLimit=v end)
+mkSec("Aura (Sphere)")
+mkDr("Aura Color",{"Purple","Red","Blue","Green","Yellow","Cyan","Pink","White"},S.AuraColor,function(v)S.AuraColor=v end)
+mkSl("Aura Size",3,15,S.AuraSize,function(v)S.AuraSize=v end)
+mkSec("Sky Presets")
+mkDr("Preset",{"None","Night","Sunset","Space","Red","Neon","Cyberpunk","Retrowave","Horror"},S.SkyPreset,function(v)S.SkyPreset=v end)
+mkSec("Visuals")
+mkC("Damage Numbers",S.DamageNumbers,function(v)S.DamageNumbers=v end)
+mkC("Hit Marker",S.HitMarker,function(v)S.HitMarker=v end)
+mkC("Kill Feed",S.KillFeed,function(v)S.KillFeed=v end)
+mkSec("Hat")
+mkDr("Hat Type",{"China","Tophat","Crown","Halo"},S.HatType,function(v)S.HatType=v end)
+end))
+
 table.insert(tabs,mkT("Sound","🔊",function()
 clr()
 mkSec("Hit Sound")mkC("Enable Hit Sound",S.HSnd,function(v)S.HSnd=v end)
@@ -408,6 +460,7 @@ mkSec("Particle Aura")mkC("Enable Aura",S.Aura,function(v)S.Aura=v end)
 mkDr("Aura Type",{"Fire","Sparkle","Lightning","Snow","Neon","Rainbow"},S.AuraT,function(v)S.AuraT=v end)
 mkSl("Aura Rate",5,100,S.AuraR,function(v)S.AuraR=v end)
 end))
+
 table.insert(tabs,mkT("Extras","⚡",function()
 clr()
 mkSec("Lighting")mkC("Fullbright",S.FB,function(v)
@@ -446,6 +499,7 @@ mkSl("Walk Speed",16,200,S.Spd,function(v)S.Spd=v local h=LP.Character and LP.Ch
 mkSl("Jump Power",50,300,S.Jmp,function(v)S.Jmp=v local h=LP.Character and LP.Character:FindFirstChildOfClass("Humanoid")if h then h.JumpPower=v end end)
 mkSl("Fly Speed",10,300,S.FlyS,function(v)S.FlyS=v end)
 end))
+
 table.insert(tabs,mkT("Player","👤",function()
 clr()
 mkSec("Utility")mkB2("🔄 RESET",function()local c=LP.Character if c then local h=c:FindFirstChildOfClass("Humanoid")if h then h.Health=0 end end end)
@@ -481,6 +535,49 @@ mkB2("🔄 REJOIN",function()pcall(function()T:TeleportToPlaceInstance(game.Plac
 mkB2("🚪 LEAVE",function()pcall(function()game:Shutdown()end)end)
 end))
 tabs[1].callback()tabs[1].btn.BackgroundColor3=Color3.fromRGB(120,50,220)tabs[1].lbl.TextColor3=Color3.fromRGB(255,255,255)tabs[1].bs.Transparency=0
+
+-- FPS UNLOCKER
+spawn(function()
+while true do
+task.wait(1)
+if S.FPSUnlocker then pcall(function() setfpscap(S.FPSLimit) end)
+else pcall(function() setfpscap(60) end) end
+end
+end)
+
+-- AURA SPHERE
+local auraSphere=nil
+spawn(function()
+while true do
+task.wait(0.3)
+local c=LP.Character
+local hrp=c and c:FindFirstChild("HumanoidRootPart")
+if S.AuraShape=="Sphere"and hrp then
+if not auraSphere or auraSphere.Parent~=hrp then
+if auraSphere then auraSphere:Destroy() end
+local a=Instance.new("Part",hrp)
+a.Name="AuraSphere"
+a.Shape=Enum.PartType.Ball
+a.Size=Vector3.new(S.AuraSize,S.AuraSize,S.AuraSize)
+a.Material=Enum.Material.ForceField
+a.CanCollide=false a.Massless=true a.CastShadow=false
+a.Transparency=0.7
+a.Color=C[S.AuraColor]or C.Purple
+a.CFrame=hrp.CFrame
+local w=Instance.new("WeldConstraint",a)
+w.Part0=a w.Part1=hrp
+auraSphere=a
+end
+if auraSphere then
+auraSphere.Color=C[S.AuraColor]or C.Purple
+auraSphere.Size=Vector3.new(S.AuraSize,S.AuraSize,S.AuraSize)
+auraSphere.CFrame=hrp.CFrame
+end
+else
+if auraSphere then auraSphere:Destroy() auraSphere=nil end
+end
+end
+end)
 
 -- HITBOX EXPANDER
 spawn(function()
@@ -612,135 +709,291 @@ end
 end
 end)
 
--- FOV + CROSS
-local fovC=Drawing.new("Circle")fovC.Thickness=1.5 fovC.NumSides=60 fovC.Radius=S.FOV
-fovC.Filled=false fovC.Transparency=.6 fovC.Color=C[S.FovCol]fovC.Visible=S.ShowFov
-local cDot=Drawing.new("Circle")cDot.Radius=2.5 cDot.Filled=true cDot.Color=Color3.fromRGB(255,255,255)cDot.Transparency=.9 cDot.Visible=false
-local cL1=Drawing.new("Line")cL1.Thickness=1.5 cL1.Color=Color3.fromRGB(255,255,255)cL1.Visible=false
-local cL2=Drawing.new("Line")cL2.Thickness=1.5 cL2.Color=Color3.fromRGB(255,255,255)cL2.Visible=false
-local cCir=Drawing.new("Circle")cCir.Radius=10 cCir.Thickness=1.5 cCir.Filled=false cCir.Color=Color3.fromRGB(255,255,255)cCir.Visible=false
-local cX1=Drawing.new("Line")cX1.Thickness=1.5 cX1.Color=Color3.fromRGB(255,255,255)cX1.Visible=false
-local cX2=Drawing.new("Line")cX2.Thickness=1.5 cX2.Color=Color3.fromRGB(255,255,255)cX2.Visible=false
-R.RenderStepped:Connect(function()
+-- AIM ASSIST
+R:BindToRenderStep("AimAssist",Enum.RenderPriority.Camera.Value+5,function()
+if not S.AimAssist then return end
+if not S.Aim then return end
+local c=LP.Character if not c then return end
+local closest,sd=nil,S.AimAssistFOV
 local vp=Cam.ViewportSize
-fovC.Position=Vector2.new(vp.X/2,vp.Y/2)fovC.Radius=S.FOV fovC.Color=C[S.FovCol]or C.Purple
-local c=Vector2.new(vp.X/2,vp.Y/2)
-cDot.Position=c
-cL1.From=Vector2.new(c.X-10,c.Y)cL1.To=Vector2.new(c.X-3,c.Y)
-cL2.From=Vector2.new(c.X+3,c.Y)cL2.To=Vector2.new(c.X+10,c.Y)
-cCir.Position=c
-cX1.From=Vector2.new(c.X-7,c.Y-7)cX1.To=Vector2.new(c.X+7,c.Y+7)
-cX2.From=Vector2.new(c.X+7,c.Y-7)cX2.To=Vector2.new(c.X-7,c.Y+7)
-cDot.Visible=false cL1.Visible=false cL2.Visible=false cCir.Visible=false cX1.Visible=false cX2.Visible=false
-if S.ShowCross then
-if S.CrossSty=="Dot"then cDot.Visible=true
-elseif S.CrossSty=="Cross"then cL1.Visible=true cL2.Visible=true
-elseif S.CrossSty=="Circle"then cCir.Visible=true
-elseif S.CrossSty=="X"then cX1.Visible=true cX2.Visible=true end
+local cen=Vector2.new(vp.X/2,vp.Y/2)
+for _,p in pairs(P:GetPlayers())do
+if p==LP then continue end
+local t=p.Character if not t then continue end
+local h=t:FindFirstChildOfClass("Humanoid")
+if not h or h.Health<=0 then continue end
+local part=t:FindFirstChild(S.AimAssistPart)or t:FindFirstChild("Head")
+if not part then continue end
+local sp,on=Cam:WorldToViewportPoint(part.Position)
+if not on then continue end
+local d=(Vector2.new(sp.X,sp.Y)-cen).Magnitude
+if d<sd then sd=d closest=part end
+end
+if closest then
+local newCF=CFrame.new(Cam.CFrame.Position,closest.Position)
+Cam.CFrame=Cam.CFrame:Lerp(newCF,1-S.AimAssistSmooth)
 end
 end)
 
--- WATERMARK UPDATE
-local fr2,lt2=0,tick()
-local curFps2=60
-local curPing2=0
-R.RenderStepped:Connect(function()
-fr2=fr2+1
-if tick()-lt2>=0.5 then curFps2=math.floor(fr2/(tick()-lt2))fr2=0 lt2=tick()end
+-- TRIGGER BOT
+local lastTrigger=0
+R.Stepped:Connect(function()
+if not S.TriggerBot then return end
+if tick()-lastTrigger<S.TriggerDelay then return end
+local c=LP.Character if not c then return end
+local vp=Cam.ViewportSize
+local cen=Vector2.new(vp.X/2,vp.Y/2)
+for _,p in pairs(P:GetPlayers())do
+if p==LP then continue end
+local t=p.Character if not t then continue end
+local h=t:FindFirstChildOfClass("Humanoid")
+if not h or h.Health<=0 then continue end
+local part=t:FindFirstChild("Head")
+if not part then continue end
+local sp,on=Cam:WorldToViewportPoint(part.Position)
+if not on then continue end
+local d=(Vector2.new(sp.X,sp.Y)-cen).Magnitude
+if d<10 then
+local tool=c:FindFirstChildOfClass("Tool")
+if tool then pcall(function() tool:Activate()end) lastTrigger=tick() return end
+end
+end
 end)
+
+-- AUTO PARRY
+spawn(function()
+while true do
+task.wait(0.05)
+if S.AutoParry then
+local c=LP.Character
+if c then
+local hrp=c:FindFirstChild("HumanoidRootPart")
+if hrp then
+for _,p in pairs(P:GetPlayers())do
+if p==LP then continue end
+local t=p.Character
+if t then
+local thrp=t:FindFirstChild("HumanoidRootPart")
+if thrp then
+local d=(hrp.Position-thrp.Position).Magnitude
+if d<=S.AutoParryRange then
+pcall(function()
+if U:IsKeyDown(Enum.KeyCode[S.AutoParryKey])then
+local tool=c:FindFirstChildOfClass("Tool")
+if tool then tool:Activate()end
+end
+end)
+end
+end
+end
+end
+end
+end
+end
+end
+end)
+
+-- DAMAGE NUMBERS + HIT MARKER
+local watchedDmg={}
+local function watchDamage(p,h)
+if p==LP or not h or watchedDmg[h]then return end
+watchedDmg[h]=true
+local last=h.Health
+h.HealthChanged:Connect(function(newHP)
+if newHP<last and newHP>0 then
+local dmg=last-newHP
+if S.DamageNumbers then
+local char=h.Parent
+local hrp=char and char:FindFirstChild("HumanoidRootPart")
+if hrp then
+local sp=Cam:WorldToViewportPoint(hrp.Position+Vector3.new(0,3,0))
+if sp.Z>0 then
+local txt=Drawing.new("Text")
+txt.Text="- "..math.floor(dmg)
+txt.Size=18 txt.Center=true txt.Outline=true
+txt.Color=Color3.fromRGB(255,80,80)
+txt.Position=Vector2.new(sp.X,sp.Y)
+txt.Visible=true
+table.insert(dmgDrawings,{txt=txt,pos=Vector2.new(sp.X,sp.Y),life=1})
+end
+end
+end
+if S.HitMarker then
+local cx,cy=Cam.ViewportSize.X/2,Cam.ViewportSize.Y/2
+for i=1,4 do
+local line=Drawing.new("Line")
+line.Thickness=2
+line.Color=Color3.fromRGB(255,255,255)
+line.Visible=true
+table.insert(hitMarkerDrawings,{line=line,cx=cx,cy=cy,life=0.5,dir=i})
+end
+end
+end
+last=newHP
+end)
+h.Destroying:Connect(function() watchedDmg[h]=nil end)
+end
+spawn(function()
+while true do
+task.wait(0.3)
+for _,p in pairs(P:GetPlayers())do
+if p==LP then continue end
+local c=p.Character
+local h=c and c:FindFirstChildOfClass("Humanoid")
+if h then watchDamage(p,h)end
+end
+end
+end)
+
+R.RenderStepped:Connect(function()
+for i=#dmgDrawings,1,-1 do
+local d=dmgDrawings[i]
+d.life=d.life-0.02
+d.pos=d.pos-Vector2.new(0,0.8)
+d.txt.Position=d.pos
+d.txt.Transparency=d.life
+if d.life<=0 then d.txt:Remove()table.remove(dmgDrawings,i)end
+end
+for i=#hitMarkerDrawings,1,-1 do
+local h=hitMarkerDrawings[i]
+h.life=h.life-0.05
+local len=8
+if h.dir==1 then h.line.From=Vector2.new(h.cx-len,h.cy-len)h.line.To=Vector2.new(h.cx-len+4,h.cy-len+4)
+elseif h.dir==2 then h.line.From=Vector2.new(h.cx+len,h.cy-len)h.line.To=Vector2.new(h.cx+len-4,h.cy-len+4)
+elseif h.dir==3 then h.line.From=Vector2.new(h.cx-len,h.cy+len)h.line.To=Vector2.new(h.cx-len+4,h.cy+len-4)
+elseif h.dir==4 then h.line.From=Vector2.new(h.cx+len,h.cy+len)h.line.To=Vector2.new(h.cx+len-4,h.cy+len-4)
+end
+h.line.Transparency=h.life*2
+if h.life<=0 then h.line:Remove()table.remove(hitMarkerDrawings,i)end
+end
+end)
+
+-- KILL FEED
+local function killFeed(text)
+local f=Instance.new("Frame",gui)
+f.Size=UDim2.new(0,280,0,32)
+f.Position=UDim2.new(1,-290,0.3,kfY)
+f.BackgroundColor3=Color3.fromRGB(18,18,26)
+f.BackgroundTransparency=0.2
+f.BorderSizePixel=0
+f.ZIndex=80
+Instance.new("UICorner",f).CornerRadius=UDim.new(0,6)
+local l=Instance.new("TextLabel",f)
+l.Size=UDim2.new(1,-16,1,0)
+l.Position=UDim2.new(0,8,0,0)
+l.BackgroundTransparency=1
+l.Text=text
+l.TextColor3=Color3.fromRGB(255,255,255)
+l.TextSize=13
+l.Font=Enum.Font.GothamMedium
+l.TextXAlignment=Enum.TextXAlignment.Left
+l.ZIndex=81
+kfY=kfY+36
+task.delay(4,function()
+f:TweenPosition(UDim2.new(1,-290,0.3,kfY-40),"In","Quad",0.3,true)
+task.wait(0.3)
+f:Destroy()
+kfY=kfY-36
+end)
+end
+
+local watchedKF={}
+local function watchKill(p,h)
+if not h or watchedKF[h]then return end
+watchedKF[h]=true
+local pname=p.Name
+h.Died:Connect(function()
+if S.KillFeed then
+if p==LP then killFeed("💀 Ты умер")
+else killFeed("☠ "..pname.." died") end
+end
+end)
+h.Destroying:Connect(function() watchedKF[h]=nil end)
+end
 spawn(function()
 while true do
 task.wait(0.5)
-pcall(function() curPing2=math.floor(LP:GetNetworkPing()*1000) end)
-end
-end)
-R.RenderStepped:Connect(function()
-if not wmFrame.Visible then return end
-fpsTxt.Text=curFps2.." fps"
-local fc=Color3.fromRGB(230,230,245)
-if curFps2<30 then fc=Color3.fromRGB(255,100,100)
-elseif curFps2<60 then fc=Color3.fromRGB(255,220,100) end
-fpsTxt.TextColor3=fc
-pingTxt.Text=curPing2.." ms"
-local pc=Color3.fromRGB(230,230,245)
-if curPing2>100 then pc=Color3.fromRGB(255,100,100)
-elseif curPing2>60 then pc=Color3.fromRGB(255,220,100) end
-pingTxt.TextColor3=pc
-end)
-
--- SPIN BOT
-local spinAngle=0
-R.Stepped:Connect(function()
-if S.SpinBot then
-local c=LP.Character
-if c then
-local hrp=c:FindFirstChild("HumanoidRootPart")
-if hrp then
-spinAngle=spinAngle+math.rad(S.SpinBotSpeed)
-local pos=hrp.Position
-hrp.CFrame=CFrame.new(pos)*CFrame.Angles(0,spinAngle,0)
-end
+for _,p in pairs(P:GetPlayers())do
+local c=p.Character
+local h=c and c:FindFirstChildOfClass("Humanoid")
+if h then watchKill(p,h)end
 end
 end
 end)
 
--- THIRD PERSON FIXED
-R:BindToRenderStep("TPCamera",Enum.RenderPriority.Camera.Value+2,function()
-if S.ThirdPerson then
-local c=LP.Character
-if c then
-local hrp=c:FindFirstChild("HumanoidRootPart")
-if hrp then
-local look=Cam.CFrame.LookVector
-if look.Y<-0.5 then
-look=Vector3.new(look.X,0,look.Z)
-if look.Magnitude<0.1 then look=hrp.CFrame.LookVector end
-look=look.Unit
-end
-local target=hrp.Position+Vector3.new(0,2,0)
-local camPos=target-look*(S.ThirdPersonDist+3)+Vector3.new(0,2,0)
-Cam.CFrame=CFrame.new(camPos,target)
-end
-end
-end
-end)
-
--- CHINA HAT
+-- HAT CHANGER
 spawn(function()
-local hue=0
 while true do
-task.wait(.02)
-hue=(hue+.008)%1
-local c=LP.Character local hd=c and c:FindFirstChild("Head")
-if S.Hat and hd then
-if not hd:FindFirstChild("NCH_Layer") then
+task.wait(0.1)
+local c=LP.Character
+local hd=c and c:FindFirstChild("Head")
+if not hd then task.wait(0.5)continue end
+for _,v in pairs(hd:GetChildren())do
+if v.Name=="NCH_Layer"or v.Name=="HatCustom"then v:Destroy()end
+end
+if not S.Hat then task.wait(0.3)continue end
+if S.HatType=="China"then
 local layers={{y=1.5,s=4.5},{y=1.9,s=3.8},{y=2.3,s=3.1},{y=2.7,s=2.4},{y=3.1,s=1.7},{y=3.5,s=1.0},{y=3.9,s=.4}}
-for i,l in ipairs(layers) do
+for i,l in ipairs(layers)do
 local p=Instance.new("Part",hd)
-p.Name="NCH_Layer"p.Shape=Enum.PartType.Cylinder p.Size=Vector3.new(.25,l.s,l.s)
-p.Material=Enum.Material.Neon p.CanCollide=false p.Massless=true p.CastShadow=false
+p.Name="NCH_Layer"
+p.Shape=Enum.PartType.Cylinder
+p.Size=Vector3.new(.25,l.s,l.s)
+p.Material=Enum.Material.Neon
+p.CanCollide=false p.Massless=true p.CastShadow=false
 p.CFrame=hd.CFrame*CFrame.new(0,l.y,0)*CFrame.Angles(0,0,math.rad(90))
 local w=Instance.new("WeldConstraint",p)w.Part0=p w.Part1=hd
 if i==1 then local li=Instance.new("PointLight",p)li.Brightness=3 li.Range=15 li.Shadows=false end
 end
+elseif S.HatType=="Tophat"then
+local brim=Instance.new("Part",hd)
+brim.Name="HatCustom"brim.Shape=Enum.PartType.Cylinder
+brim.Size=Vector3.new(.2,3,3)
+brim.Material=Enum.Material.Neon brim.Color=Color3.fromRGB(100,100,255)
+brim.CanCollide=false brim.Massless=true
+brim.CFrame=hd.CFrame*CFrame.new(0,1.5,0)*CFrame.Angles(0,0,math.rad(90))
+local w1=Instance.new("WeldConstraint",brim)w1.Part0=brim w1.Part1=hd
+local cap=Instance.new("Part",hd)
+cap.Name="HatCustom"cap.Shape=Enum.PartType.Cylinder
+cap.Size=Vector3.new(1,2,2)
+cap.Material=Enum.Material.Neon cap.Color=Color3.fromRGB(100,100,255)
+cap.CanCollide=false cap.Massless=true
+cap.CFrame=hd.CFrame*CFrame.new(0,2.5,0)*CFrame.Angles(0,0,math.rad(90))
+local w2=Instance.new("WeldConstraint",cap)w2.Part0=cap w2.Part1=hd
+elseif S.HatType=="Crown"then
+for i=-1,1 do
+local spike=Instance.new("Part",hd)
+spike.Name="HatCustom"
+spike.Shape=Enum.PartType.Cylinder
+spike.Size=Vector3.new(.2,.5,.5)
+spike.Material=Enum.Material.Neon spike.Color=Color3.fromRGB(255,215,0)
+spike.CanCollide=false spike.Massless=true
+spike.CFrame=hd.CFrame*CFrame.new(i*.6,1.7,0)*CFrame.Angles(0,0,math.rad(90))
+local w=Instance.new("WeldConstraint",spike)w.Part0=spike w.Part1=hd
+end
+local base=Instance.new("Part",hd)
+base.Name="HatCustom"base.Shape=Enum.PartType.Cylinder
+base.Size=Vector3.new(.2,2,2)
+base.Material=Enum.Material.Neon base.Color=Color3.fromRGB(255,215,0)
+base.CanCollide=false base.Massless=true
+base.CFrame=hd.CFrame*CFrame.new(0,1.4,0)*CFrame.Angles(0,0,math.rad(90))
+local w=Instance.new("WeldConstraint",base)w.Part0=base w.Part1=hd
+elseif S.HatType=="Halo"then
+local ring=Instance.new("Part",hd)
+ring.Name="HatCustom"ring.Shape=Enum.PartType.Cylinder
+ring.Size=Vector3.new(.15,2,2)
+ring.Material=Enum.Material.Neon ring.Color=Color3.fromRGB(255,255,150)
+ring.CanCollide=false ring.Massless=true
+ring.CFrame=hd.CFrame*CFrame.new(0,2.5,0)*CFrame.Angles(0,0,math.rad(90))
+local w=Instance.new("WeldConstraint",ring)w.Part0=ring w.Part1=hd
+local li=Instance.new("PointLight",ring)li.Brightness=3 li.Range=12 li.Color=Color3.fromRGB(255,255,150)
 end
 for _,p in pairs(hd:GetChildren())do
-if p.Name=="NCH_Layer"then
-p.Color=Color3.fromHSV((hue+p.Position.Y*.05)%1,1,1)
-local li=p:FindFirstChildOfClass("PointLight")if li then li.Color=p.Color end
+if p.Name=="NCH_Layer"or p.Name=="HatCustom"then
+p.Color=Color3.fromHSV((tick()*.15)%1,1,1)
 end
 end
-else
-local c=LP.Character local hd=c and c:FindFirstChild("Head")
-if hd then for _,p in pairs(hd:GetChildren())do if p.Name=="NCH_Layer"then p:Destroy()end end end
-end
-if S.Rainbow then
-for _,p in pairs(P:GetPlayers())do
-if p.Character then for _,pt in pairs(p.Character:GetChildren())do
-if pt:IsA("BasePart")and pt.Name~="NCH_Layer"then pcall(function()pt.Color=Color3.fromHSV(hue,.7,1)end)end
-end end
-end
-end
+task.wait(0.05)
 end
 end)
 
@@ -767,29 +1020,28 @@ end
 end
 end)
 
--- SKY/FX
+-- SKY PRESETS
 local cSky,blm,cc,sr,atm=nil,nil,nil,nil,nil
+local skyPresets={
+Night={bk="rbxassetid://159454299",dn="rbxassetid://159454296",ft="rbxassetid://159454293",lf="rbxassetid://159454286",rt="rbxassetid://159454300",up="rbxassetid://159454288",star=5000},
+Sunset={bk="rbxassetid://271042516",dn="rbxassetid://271077243",ft="rbxassetid://271042556",lf="rbxassetid://271042310",rt="rbxassetid://271042467",up="rbxassetid://271041815"},
+Space={bk="rbxassetid://159454299",dn="rbxassetid://159454296",ft="rbxassetid://159454293",lf="rbxassetid://159454286",rt="rbxassetid://159454300",up="rbxassetid://159454288",star=10000},
+Red={bk="rbxassetid://12064107",dn="rbxassetid://12064152",ft="rbxassetid://12064121",lf="rbxassetid://12063984",rt="rbxassetid://12064115",up="rbxassetid://12064134"},
+Neon={bk="rbxassetid://159454299",dn="rbxassetid://159454296",ft="rbxassetid://159454293",lf="rbxassetid://159454286",rt="rbxassetid://159454300",up="rbxassetid://159454288",star=8000},
+Cyberpunk={bk="rbxassetid://271042516",dn="rbxassetid://271077243",ft="rbxassetid://271042556",lf="rbxassetid://271042310",rt="rbxassetid://271042467",up="rbxassetid://271041815",star=4000},
+Retrowave={bk="rbxassetid://12064107",dn="rbxassetid://12064152",ft="rbxassetid://12064121",lf="rbxassetid://12063984",rt="rbxassetid://12064115",up="rbxassetid://12064134",star=3000},
+Horror={bk="rbxassetid://159454299",dn="rbxassetid://159454296",ft="rbxassetid://159454293",lf="rbxassetid://159454286",rt="rbxassetid://159454300",up="rbxassetid://159454288",star=0},
+}
 spawn(function()
 while true do
 task.wait(.3)
-if S.Sky then
+if S.Sky and S.SkyPreset~="None"and skyPresets[S.SkyPreset]then
 if cSky then cSky:Destroy()end
 local sk=Instance.new("Sky")
-if S.SkyT=="Night"then
-sk.SkyboxBk="rbxassetid://159454299"sk.SkyboxDn="rbxassetid://159454296"sk.SkyboxFt="rbxassetid://159454293"
-sk.SkyboxLf="rbxassetid://159454286"sk.SkyboxRt="rbxassetid://159454300"sk.SkyboxUp="rbxassetid://159454288"
-sk.StarCount=5000 sk.MoonAngularSize=15
-elseif S.SkyT=="Sunset"then
-sk.SkyboxBk="rbxassetid://271042516"sk.SkyboxDn="rbxassetid://271077243"sk.SkyboxFt="rbxassetid://271042556"
-sk.SkyboxLf="rbxassetid://271042310"sk.SkyboxRt="rbxassetid://271042467"sk.SkyboxUp="rbxassetid://271041815"
-elseif S.SkyT=="Space"then
-sk.SkyboxBk="rbxassetid://159454299"sk.SkyboxDn="rbxassetid://159454296"sk.SkyboxFt="rbxassetid://159454293"
-sk.SkyboxLf="rbxassetid://159454286"sk.SkyboxRt="rbxassetid://159454300"sk.SkyboxUp="rbxassetid://159454288"
-sk.StarCount=10000
-elseif S.SkyT=="Red"then
-sk.SkyboxBk="rbxassetid://12064107"sk.SkyboxDn="rbxassetid://12064152"sk.SkyboxFt="rbxassetid://12064121"
-sk.SkyboxLf="rbxassetid://12063984"sk.SkyboxRt="rbxassetid://12064115"sk.SkyboxUp="rbxassetid://12064134"
-end
+local p=skyPresets[S.SkyPreset]
+sk.SkyboxBk=p.bk sk.SkyboxDn=p.dn sk.SkyboxFt=p.ft
+sk.SkyboxLf=p.lf sk.SkyboxRt=p.rt sk.SkyboxUp=p.up
+if p.star then sk.StarCount=p.star end
 sk.Parent=L cSky=sk
 elseif cSky then cSky:Destroy()cSky=nil end
 if S.Bloom then if not blm then blm=Instance.new("BloomEffect",L)end blm.Intensity=S.BloomI blm.Size=24 blm.Threshold=.8
@@ -896,7 +1148,7 @@ end
 for _,p in ipairs(P:GetPlayers()) do setupKillEffect(p) end
 P.PlayerAdded:Connect(setupKillEffect)
 
--- AURA
+-- PARTICLE AURA
 local aE,aA=nil,nil
 local aP={
 Fire={tx="rbxasset://textures/particles/fire_main.dds",cl=ColorSequence.new(Color3.fromRGB(255,100,50)),lt=.8,
@@ -1205,4 +1457,4 @@ if HD[p]then HD[p]:Remove()end if AR[p]then AR[p]:Remove()end if BM[p]then BM[p]
 if SK[p]then for _,l in pairs(SK[p])do l:Remove()end end
 if CH[p]then for _,cc in pairs(CH[p])do cc:Destroy()end end
 end)
-print("[v13 PrimDLC] @LutshiyKot loaded!")
+print("[v14 PrimDLC] @LutshiyKot loaded!")
