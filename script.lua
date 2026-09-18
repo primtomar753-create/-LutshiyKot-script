@@ -46,86 +46,91 @@ ntx.Font=Enum.Font.GothamBold ntx.ZIndex=101
 nt:TweenPosition(UDim2.new(.5,-160,0,30),"Out","Quad",.5,true)
 task.delay(4,function()nt:Destroy() end)
 
--- БОЛЬШОЙ ВАТЕРМАРК (левый верх)
+-- WATERMARK (TOP RIGHT)
 local wmFrame=Instance.new("Frame",gui)
-wmFrame.Size=UDim2.new(0,420,0,46)
-wmFrame.Position=UDim2.new(0,15,0,15)
+wmFrame.Size=UDim2.new(0,270,0,34)
+wmFrame.Position=UDim2.new(1,-275,0,5)
 wmFrame.BackgroundColor3=Color3.fromRGB(18,18,26)
-wmFrame.BackgroundTransparency=0.1
+wmFrame.BackgroundTransparency=0.15
 wmFrame.BorderSizePixel=0
 wmFrame.ZIndex=70
-Instance.new("UICorner",wmFrame).CornerRadius=UDim.new(0,10)
+Instance.new("UICorner",wmFrame).CornerRadius=UDim.new(0,8)
 local wmStroke=Instance.new("UIStroke",wmFrame)
 wmStroke.Color=Color3.fromRGB(80,80,110)
-wmStroke.Thickness=1.5
-wmStroke.Transparency=0.2
+wmStroke.Thickness=1
+wmStroke.Transparency=0.3
 
 local wmMoon=Instance.new("TextLabel",wmFrame)
-wmMoon.Size=UDim2.new(0,30,1,0)wmMoon.Position=UDim2.new(0,18,0,0)
-wmMoon.BackgroundTransparency=1 wmMoon.Text="🌙" wmMoon.TextSize=24
+wmMoon.Size=UDim2.new(0,22,1,0)wmMoon.Position=UDim2.new(0,10,0,0)
+wmMoon.BackgroundTransparency=1 wmMoon.Text="🌙" wmMoon.TextSize=16
 wmMoon.Font=Enum.Font.GothamBold wmMoon.TextColor3=Color3.fromRGB(230,230,250)
 wmMoon.TextXAlignment=Enum.TextXAlignment.Left wmMoon.ZIndex=71
 
 local wmName=Instance.new("TextLabel",wmFrame)
-wmName.Size=UDim2.new(0,120,1,0)wmName.Position=UDim2.new(0,52,0,0)
-wmName.BackgroundTransparency=1 wmName.Text="PrimDLC" wmName.TextSize=20
+wmName.Size=UDim2.new(0,80,1,0)wmName.Position=UDim2.new(0,32,0,0)
+wmName.BackgroundTransparency=1 wmName.Text="PrimDLC" wmName.TextSize=14
 wmName.Font=Enum.Font.GothamBold wmName.TextColor3=Color3.fromRGB(240,240,255)
 wmName.TextXAlignment=Enum.TextXAlignment.Left wmName.ZIndex=71
 
 local d1=Instance.new("Frame",wmFrame)
-d1.Size=UDim2.new(0,1,0,26)d1.Position=UDim2.new(0,178,0.5,-13)
+d1.Size=UDim2.new(0,1,0,20)d1.Position=UDim2.new(0,116,0.5,-10)
 d1.BackgroundColor3=Color3.fromRGB(80,80,110)d1.BorderSizePixel=0 d1.ZIndex=71
 
 local fpsIco=Instance.new("Frame",wmFrame)
-fpsIco.Size=UDim2.new(0,26,0,26)fpsIco.Position=UDim2.new(0,192,0.5,-13)
+fpsIco.Size=UDim2.new(0,20,0,20)fpsIco.Position=UDim2.new(0,124,0.5,-10)
 fpsIco.BackgroundColor3=Color3.fromRGB(110,95,160)fpsIco.BorderSizePixel=0 fpsIco.ZIndex=71
-Instance.new("UICorner",fpsIco).CornerRadius=UDim.new(0,6)
+Instance.new("UICorner",fpsIco).CornerRadius=UDim.new(0,5)
 local fpsIcoTxt=Instance.new("TextLabel",fpsIco)
 fpsIcoTxt.Size=UDim2.new(1,0,1,0)fpsIcoTxt.BackgroundTransparency=1
-fpsIcoTxt.Text="∿"fpsIcoTxt.TextSize=18
+fpsIcoTxt.Text="∿"fpsIcoTxt.TextSize=14
 fpsIcoTxt.Font=Enum.Font.GothamBold fpsIcoTxt.TextColor3=Color3.fromRGB(230,230,255)fpsIcoTxt.ZIndex=72
 
 local fpsTxt=Instance.new("TextLabel",wmFrame)
-fpsTxt.Size=UDim2.new(0,65,1,0)fpsTxt.Position=UDim2.new(0,224,0,0)
-fpsTxt.BackgroundTransparency=1 fpsTxt.Text="60 fps" fpsTxt.TextSize=18
+fpsTxt.Size=UDim2.new(0,50,1,0)fpsTxt.Position=UDim2.new(0,148,0,0)
+fpsTxt.BackgroundTransparency=1 fpsTxt.Text="60 fps" fpsTxt.TextSize=13
 fpsTxt.Font=Enum.Font.GothamBold fpsTxt.TextColor3=Color3.fromRGB(240,240,250)
 fpsTxt.TextXAlignment=Enum.TextXAlignment.Left fpsTxt.ZIndex=71
 
 local d2=Instance.new("Frame",wmFrame)
-d2.Size=UDim2.new(0,1,0,26)d2.Position=UDim2.new(0,294,0.5,-13)
+d2.Size=UDim2.new(0,1,0,20)d2.Position=UDim2.new(0,200,0.5,-10)
 d2.BackgroundColor3=Color3.fromRGB(80,80,110)d2.BorderSizePixel=0 d2.ZIndex=71
 
 local pingIco=Instance.new("Frame",wmFrame)
-pingIco.Size=UDim2.new(0,26,0,26)pingIco.Position=UDim2.new(0,308,0.5,-13)
+pingIco.Size=UDim2.new(0,20,0,20)pingIco.Position=UDim2.new(0,208,0.5,-10)
 pingIco.BackgroundColor3=Color3.fromRGB(110,95,160)pingIco.BorderSizePixel=0 pingIco.ZIndex=71
-Instance.new("UICorner",pingIco).CornerRadius=UDim.new(0,6)
+Instance.new("UICorner",pingIco).CornerRadius=UDim.new(0,5)
 local pingIcoTxt=Instance.new("TextLabel",pingIco)
 pingIcoTxt.Size=UDim2.new(1,0,1,0)pingIcoTxt.BackgroundTransparency=1
-pingIcoTxt.Text="●"pingIcoTxt.TextSize=14
+pingIcoTxt.Text="●"pingIcoTxt.TextSize=11
 pingIcoTxt.Font=Enum.Font.GothamBold pingIcoTxt.TextColor3=Color3.fromRGB(230,230,255)pingIcoTxt.ZIndex=72
 
 local pingTxt=Instance.new("TextLabel",wmFrame)
-pingTxt.Size=UDim2.new(0,70,1,0)pingTxt.Position=UDim2.new(0,340,0,0)
-pingTxt.BackgroundTransparency=1 pingTxt.Text="0 ms" pingTxt.TextSize=18
+pingTxt.Size=UDim2.new(0,55,1,0)pingTxt.Position=UDim2.new(0,232,0,0)
+pingTxt.BackgroundTransparency=1 pingTxt.Text="0 ms" pingTxt.TextSize=13
 pingTxt.Font=Enum.Font.GothamBold pingTxt.TextColor3=Color3.fromRGB(240,240,250)
 pingTxt.TextXAlignment=Enum.TextXAlignment.Left pingTxt.ZIndex=71
 
-local GL={}
-for i=1,5 do
-local g=Instance.new("Frame",gui)
-g.Size=UDim2.new(0,460+i*12,0,340+i*12)g.Position=UDim2.new(.5,-(230+i*6),.5,-(170+i*6))
-g.BackgroundColor3=Color3.fromRGB(200,100,255)g.BackgroundTransparency=.9+i*.012 g.BorderSizePixel=0 g.ZIndex=0
-Instance.new("UICorner",g).CornerRadius=UDim.new(0,22)
-table.insert(GL,g)
-end
-
+-- ОКНО
 MF=Instance.new("Frame",gui)
 MF.Size=UDim2.new(0,460,0,340)MF.Position=UDim2.new(.5,-230,.5,-170)MF.BackgroundColor3=Color3.fromRGB(55,20,110)
 MF.BackgroundTransparency=.15 MF.BorderSizePixel=0 MF.Active=true MF.Draggable=true MF.ZIndex=2
 Instance.new("UICorner",MF).CornerRadius=UDim.new(0,14)
-MF:GetPropertyChangedSignal("Position"):Connect(function()
-for i,g in ipairs(GL) do g.Position=MF.Position-UDim2.new(0,6*i,0,6*i) end
-end)
+
+-- GLOW (дочерние MF — двигаются автоматически)
+local GL={}
+for i=1,5 do
+local g=Instance.new("Frame",MF)
+g.AnchorPoint=Vector2.new(0.5,0.5)
+g.Position=UDim2.new(0.5,0,0.5,0)
+g.Size=UDim2.new(1,i*12,1,i*12)
+g.BackgroundColor3=Color3.fromRGB(200,100,255)
+g.BackgroundTransparency=.9+i*.012
+g.BorderSizePixel=0
+g.ZIndex=0
+Instance.new("UICorner",g).CornerRadius=UDim.new(0,20)
+table.insert(GL,g)
+end
+
 local GR=Instance.new("UIGradient",MF)
 GR.Color=ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(150,40,230)),ColorSequenceKeypoint.new(.5,Color3.fromRGB(70,20,150)),ColorSequenceKeypoint.new(1,Color3.fromRGB(120,40,200))})
 GR.Rotation=45
@@ -164,24 +169,24 @@ HD1.Size=UDim2.new(1,0,0,42)HD1.BackgroundColor3=Color3.fromRGB(80,30,150)HD1.Ba
 HD1.BorderSizePixel=0 HD1.ZIndex=3
 Instance.new("UICorner",HD1).CornerRadius=UDim.new(0,14)
 local HF=Instance.new("Frame",HD1)
-HF.Size=UDim2.new(1,0,0,18)HF.Position=UDim2.new(0,0,1,-18)HF.BackgroundColor3=Color3.fromRGB(80,30,150)
+HF.Size=UDim2.new(1,0,0,14)HF.Position=UDim2.new(0,0,1,-14)HF.BackgroundColor3=Color3.fromRGB(80,30,150)
 HF.BackgroundTransparency=.35 HF.BorderSizePixel=0 HF.ZIndex=3
 local AV=Instance.new("TextLabel",HD1)
-AV.Size=UDim2.new(0,28,0,28)AV.Position=UDim2.new(0,10,0,7)AV.BackgroundColor3=Color3.fromRGB(80,40,140)
+AV.Size=UDim2.new(0,26,0,26)AV.Position=UDim2.new(0,10,0,8)AV.BackgroundColor3=Color3.fromRGB(80,40,140)
 AV.Text="👑"AV.TextSize=15 AV.Font=Enum.Font.GothamBold AV.BorderSizePixel=0 AV.ZIndex=4
-Instance.new("UICorner",AV).CornerRadius=UDim.new(0,8)
+Instance.new("UICorner",AV).CornerRadius=UDim.new(0,7)
 local TL=Instance.new("TextLabel",HD1)
-TL.Size=UDim2.new(1,-180,0,20)TL.Position=UDim2.new(0,46,0,5)TL.BackgroundTransparency=1
+TL.Size=UDim2.new(1,-180,0,20)TL.Position=UDim2.new(0,44,0,6)TL.BackgroundTransparency=1
 TL.Text="@LutshiyKot"TL.TextColor3=Color3.fromRGB(255,255,255)TL.TextSize=14
 TL.Font=Enum.Font.GothamBold TL.TextXAlignment=Enum.TextXAlignment.Left TL.ZIndex=4
 local SL=Instance.new("TextLabel",HD1)
-SL.Size=UDim2.new(1,-180,0,14)SL.Position=UDim2.new(0,46,0,22)SL.BackgroundTransparency=1
+SL.Size=UDim2.new(1,-180,0,14)SL.Position=UDim2.new(0,44,0,22)SL.BackgroundTransparency=1
 SL.Text="by @LutshiyKot"SL.TextColor3=Color3.fromRGB(230,200,255)SL.TextSize=10
 SL.Font=Enum.Font.Gotham SL.TextXAlignment=Enum.TextXAlignment.Left SL.ZIndex=4
 
 local function mkb(t,x,cb)
 local b=Instance.new("TextButton",HD1)
-b.Size=UDim2.new(0,26,0,26)b.Position=UDim2.new(1,x,0,8)b.BackgroundColor3=Color3.fromRGB(60,25,110)
+b.Size=UDim2.new(0,26,0,26)b.Position=UDim2.new(1,x,0,6)b.BackgroundColor3=Color3.fromRGB(60,25,110)
 b.BackgroundTransparency=.15 b.Text=t b.TextColor3=Color3.fromRGB(255,255,255)b.TextSize=13
 b.Font=Enum.Font.GothamBold b.BorderSizePixel=0 b.AutoButtonColor=false b.ZIndex=4
 Instance.new("UICorner",b).CornerRadius=UDim.new(0,7)
@@ -207,16 +212,16 @@ local min=false
 local function setMin(m)
 min=m
 if m then
-MF.Size=UDim2.new(0,460,0,42)SB.Visible=false CT.Visible=false IG.Visible=false
-for i,g in ipairs(GL) do g.Size=UDim2.new(0,460+i*12,0,42+i*12) g.Position=UDim2.new(.5,-(230+i*6),.5,-(21+i*6)) end
+MF.Size=UDim2.new(0,460,0,42)
+SB.Visible=false CT.Visible=false IG.Visible=false
 else
-MF.Size=UDim2.new(0,460,0,340)SB.Visible=true CT.Visible=true IG.Visible=true
-for i,g in ipairs(GL) do g.Size=UDim2.new(0,460+i*12,0,340+i*12) g.Position=UDim2.new(.5,-(230+i*6),.5,-(170+i*6)) end
+MF.Size=UDim2.new(0,460,0,340)
+SB.Visible=true CT.Visible=true IG.Visible=true
 end
 end
 mkb("—",-90,function()setMin(not min)end)
 mkb("□",-60,function()setMin(false)end)
-mkb("✕",-30,function()MF.Visible=false for _,g in ipairs(GL) do g.Visible=false end if OB then OB.Visible=true end end)
+mkb("X",-30,function()MF.Visible=false if OB then OB.Visible=true end end)
 
 OB=Instance.new("TextButton",gui)
 OB.Size=UDim2.new(0,45,0,45)OB.Position=UDim2.new(0,20,0,100)OB.BackgroundColor3=Color3.fromRGB(60,25,110)
@@ -224,7 +229,7 @@ OB.Text="⚡"OB.TextColor3=Color3.fromRGB(255,255,255)OB.TextSize=20 OB.Font=Enu
 OB.BorderSizePixel=0 OB.Visible=false OB.ZIndex=50
 Instance.new("UICorner",OB).CornerRadius=UDim.new(1,0)
 local obs=Instance.new("UIStroke",OB)obs.Color=Color3.fromRGB(220,130,255)obs.Thickness=2
-OB.MouseButton1Click:Connect(function()MF.Visible=true for _,g in ipairs(GL) do g.Visible=true end setMin(false)OB.Visible=false end)
+OB.MouseButton1Click:Connect(function()MF.Visible=true setMin(false)OB.Visible=false end)
 
 -- ЭЛЕМЕНТЫ
 local function mkSec(t)
@@ -529,29 +534,44 @@ elseif curPing2>60 then pc=Color3.fromRGB(255,220,100) end
 pingTxt.TextColor3=pc
 end)
 
--- SPIN BOT + THIRD PERSON
+-- SPIN BOT
 local spinAngle=0
-R:BindToRenderStep("SpinAndTP",Enum.RenderPriority.Camera.Value+3,function()
+R.Stepped:Connect(function()
+if S.SpinBot then
 local c=LP.Character
 if c then
-local hd=c:FindFirstChild("Head")
-if hd then
-if S.ThirdPerson then
-local targetPos=hd.Position
-local lookDir=Cam.CFrame.LookVector
-local camPos=targetPos-lookDir*S.ThirdPersonDist+Vector3.new(0,1.5,0)
-Cam.CFrame=CFrame.new(camPos,targetPos)
-end
-if S.SpinBot then
+local hrp=c:FindFirstChild("HumanoidRootPart")
+if hrp then
 spinAngle=spinAngle+math.rad(S.SpinBotSpeed)
-local offset=Vector3.new(math.cos(spinAngle)*10,3,math.sin(spinAngle)*10)
-Cam.CFrame=CFrame.new(hd.Position+offset,hd.Position)
+local pos=hrp.Position
+hrp.CFrame=CFrame.new(pos)*CFrame.Angles(0,spinAngle,0)
 end
 end
 end
 end)
 
--- ULTRA CHINA HAT
+-- THIRD PERSON
+R:BindToRenderStep("TPCamera",Enum.RenderPriority.Camera.Value+2,function()
+if S.ThirdPerson then
+local c=LP.Character
+if c then
+local hrp=c:FindFirstChild("HumanoidRootPart")
+if hrp then
+local lookDir=Cam.CFrame.LookVector
+if lookDir.Y<-0.7 then
+lookDir=Vector3.new(lookDir.X,0,lookDir.Z)
+if lookDir.Magnitude<0.1 then lookDir=hrp.CFrame.LookVector end
+lookDir=lookDir.Unit
+end
+local targetPoint=hrp.Position+Vector3.new(0,1.5,0)
+local camPos=targetPoint-lookDir*S.ThirdPersonDist
+Cam.CFrame=CFrame.new(camPos,targetPoint)
+end
+end
+end
+end)
+
+-- CHINA HAT
 spawn(function()
 local hue=0
 while true do
@@ -1051,4 +1071,4 @@ if HD[p]then HD[p]:Remove()end if AR[p]then AR[p]:Remove()end if BM[p]then BM[p]
 if SK[p]then for _,l in pairs(SK[p])do l:Remove()end end
 if CH[p]then for _,cc in pairs(CH[p])do cc:Destroy()end end
 end)
-print("[v9 PrimDLC] @LutshiyKot loaded!")
+print("[v11 PrimDLC] @LutshiyKot loaded!")
