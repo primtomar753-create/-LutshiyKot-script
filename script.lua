@@ -12,6 +12,9 @@ pcall(function() S1.RespectFilteringEnabled=false end)
 
 local S={
 Aim=true,Smooth=.05,FOV=120,Part="Head",MaxD=500,VisChk=true,AutoS=false,Pred=false,
+SilentAim=false,SilentFOV=200,SilentHitPart="Head",SilentVisibleCheck=false,SilentHitChance=100,
+HitboxExpander=false,HitboxSize=8,KillAura=false,KillAuraRange=15,
+TeleportMenu=false,AutoDodge=false,AutoDodgeRange=30,Trail=false,
 TgtE=true,TgtStyle="Box",TgtCol="Red",TgtPulse=false,TgtName=true,TgtHP=true,TgtDist=true,TgtArrow=false,TgtLock=false,TgtTrail=false,
 ESP=true,Box=true,BoxStyle="Normal",HL=true,Name=true,Dist=true,HP=true,Tracer=false,Skel=false,HDot=false,Arr=false,Chams=false,Beam=false,
 FB=false,NF=false,ShowFov=true,ShowCross=true,CrossSty="Dot",WM=true,FovCol="Purple",
@@ -33,7 +36,6 @@ local tabs={}
 pcall(function() gui=Instance.new("ScreenGui")gui.Name="Gui"gui.ResetOnSpawn=false gui.ZIndexBehavior=Enum.ZIndexBehavior.Sibling gui.Parent=game:GetService("CoreGui") end)
 if not gui or not gui.Parent then gui=Instance.new("ScreenGui")gui.Name="Gui"gui.ResetOnSpawn=false gui.Parent=LP:WaitForChild("PlayerGui") end
 
--- ПРИВЕТ
 local nt=Instance.new("Frame",gui)
 nt.Size=UDim2.new(0,320,0,65)nt.Position=UDim2.new(.5,-160,0,-70)nt.BackgroundColor3=Color3.fromRGB(30,10,60)
 nt.BackgroundTransparency=.1 nt.BorderSizePixel=0 nt.ZIndex=100
@@ -46,7 +48,6 @@ ntx.Font=Enum.Font.GothamBold ntx.ZIndex=101
 nt:TweenPosition(UDim2.new(.5,-160,0,30),"Out","Quad",.5,true)
 task.delay(4,function()nt:Destroy() end)
 
--- WATERMARK (TOP RIGHT)
 local wmFrame=Instance.new("Frame",gui)
 wmFrame.Size=UDim2.new(0,270,0,34)
 wmFrame.Position=UDim2.new(1,-275,0,5)
@@ -59,23 +60,19 @@ local wmStroke=Instance.new("UIStroke",wmFrame)
 wmStroke.Color=Color3.fromRGB(80,80,110)
 wmStroke.Thickness=1
 wmStroke.Transparency=0.3
-
 local wmMoon=Instance.new("TextLabel",wmFrame)
 wmMoon.Size=UDim2.new(0,22,1,0)wmMoon.Position=UDim2.new(0,10,0,0)
 wmMoon.BackgroundTransparency=1 wmMoon.Text="🌙" wmMoon.TextSize=16
 wmMoon.Font=Enum.Font.GothamBold wmMoon.TextColor3=Color3.fromRGB(230,230,250)
 wmMoon.TextXAlignment=Enum.TextXAlignment.Left wmMoon.ZIndex=71
-
 local wmName=Instance.new("TextLabel",wmFrame)
 wmName.Size=UDim2.new(0,80,1,0)wmName.Position=UDim2.new(0,32,0,0)
 wmName.BackgroundTransparency=1 wmName.Text="PrimDLC" wmName.TextSize=14
 wmName.Font=Enum.Font.GothamBold wmName.TextColor3=Color3.fromRGB(240,240,255)
 wmName.TextXAlignment=Enum.TextXAlignment.Left wmName.ZIndex=71
-
 local d1=Instance.new("Frame",wmFrame)
 d1.Size=UDim2.new(0,1,0,20)d1.Position=UDim2.new(0,116,0.5,-10)
 d1.BackgroundColor3=Color3.fromRGB(80,80,110)d1.BorderSizePixel=0 d1.ZIndex=71
-
 local fpsIco=Instance.new("Frame",wmFrame)
 fpsIco.Size=UDim2.new(0,20,0,20)fpsIco.Position=UDim2.new(0,124,0.5,-10)
 fpsIco.BackgroundColor3=Color3.fromRGB(110,95,160)fpsIco.BorderSizePixel=0 fpsIco.ZIndex=71
@@ -84,17 +81,14 @@ local fpsIcoTxt=Instance.new("TextLabel",fpsIco)
 fpsIcoTxt.Size=UDim2.new(1,0,1,0)fpsIcoTxt.BackgroundTransparency=1
 fpsIcoTxt.Text="∿"fpsIcoTxt.TextSize=14
 fpsIcoTxt.Font=Enum.Font.GothamBold fpsIcoTxt.TextColor3=Color3.fromRGB(230,230,255)fpsIcoTxt.ZIndex=72
-
 local fpsTxt=Instance.new("TextLabel",wmFrame)
 fpsTxt.Size=UDim2.new(0,50,1,0)fpsTxt.Position=UDim2.new(0,148,0,0)
 fpsTxt.BackgroundTransparency=1 fpsTxt.Text="60 fps" fpsTxt.TextSize=13
 fpsTxt.Font=Enum.Font.GothamBold fpsTxt.TextColor3=Color3.fromRGB(240,240,250)
 fpsTxt.TextXAlignment=Enum.TextXAlignment.Left fpsTxt.ZIndex=71
-
 local d2=Instance.new("Frame",wmFrame)
 d2.Size=UDim2.new(0,1,0,20)d2.Position=UDim2.new(0,200,0.5,-10)
 d2.BackgroundColor3=Color3.fromRGB(80,80,110)d2.BorderSizePixel=0 d2.ZIndex=71
-
 local pingIco=Instance.new("Frame",wmFrame)
 pingIco.Size=UDim2.new(0,20,0,20)pingIco.Position=UDim2.new(0,208,0.5,-10)
 pingIco.BackgroundColor3=Color3.fromRGB(110,95,160)pingIco.BorderSizePixel=0 pingIco.ZIndex=71
@@ -103,20 +97,17 @@ local pingIcoTxt=Instance.new("TextLabel",pingIco)
 pingIcoTxt.Size=UDim2.new(1,0,1,0)pingIcoTxt.BackgroundTransparency=1
 pingIcoTxt.Text="●"pingIcoTxt.TextSize=11
 pingIcoTxt.Font=Enum.Font.GothamBold pingIcoTxt.TextColor3=Color3.fromRGB(230,230,255)pingIcoTxt.ZIndex=72
-
 local pingTxt=Instance.new("TextLabel",wmFrame)
 pingTxt.Size=UDim2.new(0,55,1,0)pingTxt.Position=UDim2.new(0,232,0,0)
 pingTxt.BackgroundTransparency=1 pingTxt.Text="0 ms" pingTxt.TextSize=13
 pingTxt.Font=Enum.Font.GothamBold pingTxt.TextColor3=Color3.fromRGB(240,240,250)
 pingTxt.TextXAlignment=Enum.TextXAlignment.Left pingTxt.ZIndex=71
 
--- ОКНО
 MF=Instance.new("Frame",gui)
 MF.Size=UDim2.new(0,460,0,340)MF.Position=UDim2.new(.5,-230,.5,-170)MF.BackgroundColor3=Color3.fromRGB(55,20,110)
 MF.BackgroundTransparency=.15 MF.BorderSizePixel=0 MF.Active=true MF.Draggable=true MF.ZIndex=2
 Instance.new("UICorner",MF).CornerRadius=UDim.new(0,14)
 
--- GLOW (дочерние MF — двигаются автоматически)
 local GL={}
 for i=1,5 do
 local g=Instance.new("Frame",MF)
@@ -163,7 +154,6 @@ R.Heartbeat:Wait()
 end
 end)
 
--- ШАПКА
 local HD1=Instance.new("Frame",MF)
 HD1.Size=UDim2.new(1,0,0,42)HD1.BackgroundColor3=Color3.fromRGB(80,30,150)HD1.BackgroundTransparency=.35
 HD1.BorderSizePixel=0 HD1.ZIndex=3
@@ -231,7 +221,6 @@ Instance.new("UICorner",OB).CornerRadius=UDim.new(1,0)
 local obs=Instance.new("UIStroke",OB)obs.Color=Color3.fromRGB(220,130,255)obs.Thickness=2
 OB.MouseButton1Click:Connect(function()MF.Visible=true setMin(false)OB.Visible=false end)
 
--- ЭЛЕМЕНТЫ
 local function mkSec(t)
 local l=Instance.new("TextLabel",CT)
 l.Size=UDim2.new(1,-6,0,22)l.BackgroundTransparency=1
@@ -345,18 +334,14 @@ end)
 return{btn=b,lbl=l,bs=bs,callback=cb}
 end
 
--- SOUNDS
 local HSnd={Click="rbxassetid://6895079853",Bell="rbxassetid://6042054027",Minecraft="rbxassetid://6042054196",Pew="rbxassetid://6042054652",Bubble="rbxassetid://6042054764"}
 local KSnd={Explosion="rbxassetid://153467001",Ding="rbxassetid://4590662766",Bruh="rbxassetid://6042055494",Vine="rbxassetid://6042055656",Sniper="rbxassetid://6042055794"}
 local soundHolder=Instance.new("Folder",gui)
 soundHolder.Name="SoundHolder"
-
 local function pSnd(id,v)
 if not id or id=="" then return end
 local s=Instance.new("Sound")
-s.SoundId=id
-s.Volume=v or 1
-s.Parent=soundHolder
+s.SoundId=id s.Volume=v or 1 s.Parent=soundHolder
 pcall(function() s:Play() end)
 D:AddItem(s,5)
 end
@@ -366,6 +351,10 @@ table.insert(tabs,mkT("Main","🏠",function()
 clr()
 mkSec("Aimbot")mkC("Aimbot",S.Aim,function(v)S.Aim=v end)mkC("Auto Shoot",S.AutoS,function(v)S.AutoS=v end)
 mkC("Prediction",S.Pred,function(v)S.Pred=v end)mkC("Wall Check",S.VisChk,function(v)S.VisChk=v end)
+mkSec("Silent Aim")mkC("Silent Aim",S.SilentAim,function(v)S.SilentAim=v end)
+mkSl("Silent FOV",50,600,S.SilentFOV,function(v)S.SilentFOV=v end)
+mkSl("Hit Chance %",0,100,S.SilentHitChance,function(v)S.SilentHitChance=v end)
+mkC("Silent Vis Check",S.SilentVisibleCheck,function(v)S.SilentVisibleCheck=v end)
 mkSec("ESP")mkC("ESP",S.ESP,function(v)S.ESP=v end)mkC("Box",S.Box,function(v)S.Box=v end)
 mkC("Highlight",S.HL,function(v)S.HL=v end)mkC("Target ESP",S.TgtE,function(v)S.TgtE=v end)mkC("Chams",S.Chams,function(v)S.Chams=v end)
 end))
@@ -395,6 +384,7 @@ mkC("Name",S.Name,function(v)S.Name=v end)mkC("Distance",S.Dist,function(v)S.Dis
 mkC("Health Bar",S.HP,function(v)S.HP=v end)mkC("Tracer",S.Tracer,function(v)S.Tracer=v end)
 mkC("Skeleton",S.Skel,function(v)S.Skel=v end)mkC("Head Dot",S.HDot,function(v)S.HDot=v end)
 mkC("Arrow",S.Arr,function(v)S.Arr=v end)mkC("Beam",S.Beam,function(v)S.Beam=v end)
+mkC("Trail",S.Trail,function(v)S.Trail=v end)
 mkSec("Screen")mkC("FOV Circle",S.ShowFov,function(v)S.ShowFov=v end)
 mkC("Crosshair",S.ShowCross,function(v)S.ShowCross=v end)
 mkDr("Crosshair Style",{"Dot","Cross","Circle","X"},S.CrossSty,function(v)S.CrossSty=v end)
@@ -434,6 +424,15 @@ S.FB=v
 if v then L.Brightness=3 L.ClockTime=14 L.FogEnd=100000 L.GlobalShadows=false else L.Brightness=1 L.GlobalShadows=true end
 end)
 mkC("No Fog",S.NF,function(v)S.NF=v L.FogEnd=v and 100000 or 1000 end)
+mkSec("Combat")
+mkC("Hitbox Expander",S.HitboxExpander,function(v)S.HitboxExpander=v end)
+mkSl("Hitbox Size",3,15,S.HitboxSize,function(v)S.HitboxSize=v end)
+mkC("Kill Aura",S.KillAura,function(v)S.KillAura=v end)
+mkSl("Aura Range",5,50,S.KillAuraRange,function(v)S.KillAuraRange=v end)
+mkC("Auto Dodge",S.AutoDodge,function(v)S.AutoDodge=v end)
+mkSl("Dodge Range",10,60,S.AutoDodgeRange,function(v)S.AutoDodgeRange=v end)
+mkSec("Teleport")
+mkC("TP to Nearest",S.TeleportMenu,function(v)S.TeleportMenu=v end)
 mkSec("Anti-Bot")
 mkC("Spin Bot",S.SpinBot,function(v)S.SpinBot=v end)
 mkSl("Spin Speed",5,30,S.SpinBotSpeed,function(v)S.SpinBotSpeed=v end)
@@ -461,6 +460,20 @@ clr()
 mkSec("Utility")mkB2("🔄 RESET",function()local c=LP.Character if c then local h=c:FindFirstChildOfClass("Humanoid")if h then h.Health=0 end end end)
 mkB2("📋 COPY JOB ID",function()if setclipboard then setclipboard(game.JobId)end end)
 mkB2("📋 COPY PLACE ID",function()if setclipboard then setclipboard(tostring(game.PlaceId))end end)
+mkSec("Config")
+mkB2("💾 SAVE CONFIG",function()
+local data={}
+for k,v in pairs(S)do if type(v)=="boolean"or type(v)=="number"or type(v)=="string"then data[k]=v end end
+if writefile then pcall(function() writefile("PrimDLC_config.json",H:JSONEncode(data)) end) end
+end)
+mkB2("📂 LOAD CONFIG",function()
+if readfile and isfile and isfile("PrimDLC_config.json")then
+pcall(function()
+local data=H:JSONDecode(readfile("PrimDLC_config.json"))
+for k,v in pairs(data)do if S[k]~=nil then S[k]=v end end
+end)
+end
+end)
 mkSec("Server")
 mkB2("🌐 SERVER HOP",function()
 local pid=game.PlaceId local jid=game.JobId
@@ -477,6 +490,188 @@ mkB2("🔄 REJOIN",function()pcall(function()T:TeleportToPlaceInstance(game.Plac
 mkB2("🚪 LEAVE",function()pcall(function()game:Shutdown()end)end)
 end))
 tabs[1].callback()tabs[1].btn.BackgroundColor3=Color3.fromRGB(120,50,220)tabs[1].lbl.TextColor3=Color3.fromRGB(255,255,255)tabs[1].bs.Transparency=0
+
+-- SILENT AIM HOOK
+local silentTarget=nil
+local function getSilentTarget()
+local cl,sd=nil,S.SilentFOV
+local vp=Cam.ViewportSize local cen=Vector2.new(vp.X/2,vp.Y/2)
+for _,p in pairs(P:GetPlayers())do
+if p==LP then continue end
+local c=p.Character if not c then continue end
+local h=c:FindFirstChildOfClass("Humanoid")if not h or h.Health<=0 then continue end
+local part=c:FindFirstChild(S.SilentHitPart)or c:FindFirstChild("Head")or c:FindFirstChild("HumanoidRootPart")
+if not part then continue end
+if S.SilentVisibleCheck then
+local rp=RaycastParams.new()
+rp.FilterDescendantsInstances={LP.Character,Cam}
+rp.FilterType=Enum.RaycastFilterType.Exclude
+local res=workspace:Raycast(Cam.CFrame.Position,part.Position-Cam.CFrame.Position,rp)
+if res and not res.Instance:IsDescendantOf(c)then continue end
+end
+local sp,on=Cam:WorldToViewportPoint(part.Position)
+if not on then continue end
+local d=(Vector2.new(sp.X,sp.Y)-cen).Magnitude
+if d<sd then sd=d cl=part end
+end
+return cl
+end
+spawn(function()
+while true do
+task.wait(0.05)
+if S.SilentAim then silentTarget=getSilentTarget() else silentTarget=nil end
+end
+end)
+if hookmetamethod then
+local mt=hookmetamethod(game,"__namecall",function(self,...)
+if not S.SilentAim or not silentTarget then return mt(self,...) end
+local method=getnamecallmethod()
+if method=="FindPartOnRay"or method=="FindPartOnRayWithIgnoreList"or method=="FindPartOnRayWithWhitelist"or method=="Raycast"then
+if math.random(1,100)<=S.SilentHitChance then
+local args={...}
+if typeof(args[1])=="Ray"then
+args[1]=Ray.new(Cam.CFrame.Position,(silentTarget.Position-Cam.CFrame.Position).Unit*5000)
+elseif typeof(args[1])=="RaycastParams"then
+args[2]=(silentTarget.Position-Cam.CFrame.Position).Unit*5000
+elseif typeof(args[1])=="Vector3"and typeof(args[2])=="Vector3"then
+args[2]=(silentTarget.Position-Cam.CFrame.Position).Unit*5000
+end
+return mt(self,unpack(args))
+end
+end
+return mt(self,...)
+end)
+end
+
+-- HITBOX EXPANDER
+spawn(function()
+while true do
+task.wait(0.5)
+if S.HitboxExpander then
+for _,p in pairs(P:GetPlayers())do
+if p==LP then continue end
+local c=p.Character
+if c then
+for _,part in pairs(c:GetChildren())do
+if part:IsA("BasePart")and part.Name~="HumanoidRootPart"then
+pcall(function()
+part.Size=Vector3.new(S.HitboxSize,S.HitboxSize,S.HitboxSize)
+part.Transparency=0.5
+end)
+end
+end
+end
+end
+end
+end
+end)
+
+-- KILL AURA
+spawn(function()
+while true do
+task.wait(0.1)
+if S.KillAura then
+local c=LP.Character
+if c then
+local hrp=c:FindFirstChild("HumanoidRootPart")
+if hrp then
+for _,p in pairs(P:GetPlayers())do
+if p==LP then continue end
+local t=p.Character
+if t then
+local th=t:FindFirstChildOfClass("Humanoid")
+local thrp=t:FindFirstChild("HumanoidRootPart")
+if th and thrp and th.Health>0 then
+local d=(hrp.Position-thrp.Position).Magnitude
+if d<=S.KillAuraRange then
+pcall(function() if th.Health>0 then th.Health=th.Health-25 end end)
+end
+end
+end
+end
+end
+end
+end
+end
+end)
+
+-- TELEPORT TO NEAREST
+spawn(function()
+while true do
+task.wait(0.3)
+if S.TeleportMenu then
+local c=LP.Character
+if c then
+local hrp=c:FindFirstChild("HumanoidRootPart")
+if hrp then
+local closest,dist=nil,99999
+for _,p in pairs(P:GetPlayers())do
+if p==LP then continue end
+local t=p.Character
+if t then
+local thrp=t:FindFirstChild("HumanoidRootPart")
+if thrp then
+local d=(hrp.Position-thrp.Position).Magnitude
+if d<dist then dist=d closest=thrp end
+end
+end
+end
+if closest then hrp.CFrame=CFrame.new(closest.Position+Vector3.new(0,3,0)) end
+end
+end
+end
+end
+end)
+
+-- AUTO DODGE
+local lastDodge=0
+R.Stepped:Connect(function()
+if not S.AutoDodge then return end
+if tick()-lastDodge<0.5 then return end
+local c=LP.Character if not c then return end
+local hrp=c:FindFirstChild("HumanoidRootPart") if not hrp then return end
+for _,p in pairs(P:GetPlayers())do
+if p==LP then continue end
+local t=p.Character
+if t then
+local thrp=t:FindFirstChild("HumanoidRootPart")
+if thrp then
+local d=(hrp.Position-thrp.Position).Magnitude
+if d<S.AutoDodgeRange then
+local dir=(hrp.Position-thrp.Position).Unit
+hrp.CFrame=hrp.CFrame+dir*8
+lastDodge=tick()
+return
+end
+end
+end
+end
+end)
+
+-- TRAIL
+local trailAttach=nil
+spawn(function()
+while true do
+task.wait(0.5)
+local c=LP.Character
+local hrp=c and c:FindFirstChild("HumanoidRootPart")
+if S.Trail and hrp then
+if not trailAttach or trailAttach.Parent~=hrp then
+if trailAttach then trailAttach:Destroy() end
+local a0=Instance.new("Attachment",hrp) a0.Position=Vector3.new(0,1,0)
+local a1=Instance.new("Attachment",hrp) a1.Position=Vector3.new(0,-1,0)
+local tr=Instance.new("Trail",hrp)
+tr.Attachment0=a0 tr.Attachment1=a1
+tr.Lifetime=0.5
+tr.Color=ColorSequence.new(Color3.fromRGB(200,100,255))
+tr.LightEmission=1
+trailAttach=tr
+end
+else
+if trailAttach then trailAttach:Destroy() trailAttach=nil end
+end
+end
+end)
 
 -- FOV + CROSS
 local fovC=Drawing.new("Circle")fovC.Thickness=1.5 fovC.NumSides=60 fovC.Radius=S.FOV
@@ -550,22 +745,22 @@ end
 end
 end)
 
--- THIRD PERSON
+-- THIRD PERSON FIXED
 R:BindToRenderStep("TPCamera",Enum.RenderPriority.Camera.Value+2,function()
 if S.ThirdPerson then
 local c=LP.Character
 if c then
 local hrp=c:FindFirstChild("HumanoidRootPart")
 if hrp then
-local lookDir=Cam.CFrame.LookVector
-if lookDir.Y<-0.7 then
-lookDir=Vector3.new(lookDir.X,0,lookDir.Z)
-if lookDir.Magnitude<0.1 then lookDir=hrp.CFrame.LookVector end
-lookDir=lookDir.Unit
+local look=Cam.CFrame.LookVector
+if look.Y<-0.5 then
+look=Vector3.new(look.X,0,look.Z)
+if look.Magnitude<0.1 then look=hrp.CFrame.LookVector end
+look=look.Unit
 end
-local targetPoint=hrp.Position+Vector3.new(0,1.5,0)
-local camPos=targetPoint-lookDir*S.ThirdPersonDist
-Cam.CFrame=CFrame.new(camPos,targetPoint)
+local target=hrp.Position+Vector3.new(0,2,0)
+local camPos=target-look*(S.ThirdPersonDist+3)+Vector3.new(0,2,0)
+Cam.CFrame=CFrame.new(camPos,target)
 end
 end
 end
@@ -1071,4 +1266,4 @@ if HD[p]then HD[p]:Remove()end if AR[p]then AR[p]:Remove()end if BM[p]then BM[p]
 if SK[p]then for _,l in pairs(SK[p])do l:Remove()end end
 if CH[p]then for _,cc in pairs(CH[p])do cc:Destroy()end end
 end)
-print("[v11 PrimDLC] @LutshiyKot loaded!")
+print("[v12 PrimDLC] @LutshiyKot loaded!")
