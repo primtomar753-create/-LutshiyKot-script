@@ -327,7 +327,7 @@ table.insert(tabs,mkT("Visual","🎨",function()
  mkC("Health Bar",S.HP,function(v)S.HP=v end)mkC("Tracer",S.Tracer,function(v)S.Tracer=v end)
  mkC("Skeleton",S.Skel,function(v)S.Skel=v end)mkC("Head Dot",S.HDot,function(v)S.HDot=v end)
  mkC("Arrow",S.Arr,function(v)S.Arr=v end)mkC("Beam",S.Beam,function(v)S.Beam=v end)
- mkSec("Screen")mkC("FOV Circle",S.ShowFov,function(v)S.ShowFov=v;fovC.Visible=v end)
+ mkSec("Screen")mkC("FOV Circle",S.ShowFov,function(v)S.ShowFov=v end)
  mkC("Crosshair",S.ShowCross,function(v)S.ShowCross=v end)
  mkDr("Crosshair Style",{"Dot","Cross","Circle","X"},S.CrossSty,function(v)S.CrossSty=v end)
  mkC("Watermark",S.WM,function(v)wm.Visible=v end)
@@ -340,7 +340,7 @@ table.insert(tabs,mkT("FX","✨",function()
  mkSec("Sky")mkC("Change Sky",S.Sky,function(v)S.Sky=v end)
  mkDr("Sky Type",{"Night","Sunset","Space","Red"},S.SkyT,function(v)S.SkyT=v end)
  mkSec("Time")mkC("Change Time",S.Time,function(v)S.Time=v end)
- mkSlider2=mkSl mkSl("Clock Time",0,24,S.TimeV,function(v)S.TimeV=v end)
+ mkSl("Clock Time",0,24,S.TimeV,function(v)S.TimeV=v end)
  mkSec("Post-FX")mkC("Bloom",S.Bloom,function(v)S.Bloom=v end)
  mkSl("Bloom Intensity",0,5,S.BloomI,function(v)S.BloomI=v end)
  mkC("Color Correction",S.CC,function(v)S.CC=v end)
@@ -448,7 +448,7 @@ spawn(function()while true do task.wait(1)
  clockL.Visible=S.Clock
 end end)
 
--- ULTRA CHINA HAT (включён по умолчанию S.Hat=true)
+-- ULTRA CHINA HAT
 spawn(function()
  local hue=0
  while true do
@@ -939,4 +939,4 @@ P.PlayerRemoving:Connect(function(p)
  if SK[p]then for _,l in pairs(SK[p])do l:Remove()end end
  if CH[p]then for _,cc in pairs(CH[p])do cc:Destroy()end end
 end)
-print("[v7] @LutshiyKot loaded!")
+print("[v7.1] @LutshiyKot loaded!")
