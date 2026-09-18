@@ -7,12 +7,10 @@ task.wait(.5)
 local Cam=workspace.CurrentCamera
 workspace:GetPropertyChangedSignal("CurrentCamera"):Connect(function()Cam=workspace.CurrentCamera end)
 LP.CharacterAdded:Connect(function(c)c:WaitForChild("HumanoidRootPart")task.wait(.5)Cam=workspace.CurrentCamera end)
-
 pcall(function() S1.RespectFilteringEnabled=false end)
 
 local S={
 Aim=true,Smooth=.05,FOV=120,Part="Head",MaxD=500,VisChk=true,AutoS=false,Pred=false,
-SilentAim=false,SilentFOV=200,SilentHitPart="Head",SilentVisibleCheck=false,SilentHitChance=100,
 HitboxExpander=false,HitboxSize=8,KillAura=false,KillAuraRange=15,
 TeleportMenu=false,AutoDodge=false,AutoDodgeRange=30,Trail=false,
 TgtE=true,TgtStyle="Box",TgtCol="Red",TgtPulse=false,TgtName=true,TgtHP=true,TgtDist=true,TgtArrow=false,TgtLock=false,TgtTrail=false,
@@ -57,9 +55,7 @@ wmFrame.BorderSizePixel=0
 wmFrame.ZIndex=70
 Instance.new("UICorner",wmFrame).CornerRadius=UDim.new(0,8)
 local wmStroke=Instance.new("UIStroke",wmFrame)
-wmStroke.Color=Color3.fromRGB(80,80,110)
-wmStroke.Thickness=1
-wmStroke.Transparency=0.3
+wmStroke.Color=Color3.fromRGB(80,80,110)wmStroke.Thickness=1 wmStroke.Transparency=0.3
 local wmMoon=Instance.new("TextLabel",wmFrame)
 wmMoon.Size=UDim2.new(0,22,1,0)wmMoon.Position=UDim2.new(0,10,0,0)
 wmMoon.BackgroundTransparency=1 wmMoon.Text="🌙" wmMoon.TextSize=16
@@ -346,15 +342,10 @@ pcall(function() s:Play() end)
 D:AddItem(s,5)
 end
 
--- ВКЛАДКИ
 table.insert(tabs,mkT("Main","🏠",function()
 clr()
 mkSec("Aimbot")mkC("Aimbot",S.Aim,function(v)S.Aim=v end)mkC("Auto Shoot",S.AutoS,function(v)S.AutoS=v end)
 mkC("Prediction",S.Pred,function(v)S.Pred=v end)mkC("Wall Check",S.VisChk,function(v)S.VisChk=v end)
-mkSec("Silent Aim")mkC("Silent Aim",S.SilentAim,function(v)S.SilentAim=v end)
-mkSl("Silent FOV",50,600,S.SilentFOV,function(v)S.SilentFOV=v end)
-mkSl("Hit Chance %",0,100,S.SilentHitChance,function(v)S.SilentHitChance=v end)
-mkC("Silent Vis Check",S.SilentVisibleCheck,function(v)S.SilentVisibleCheck=v end)
 mkSec("ESP")mkC("ESP",S.ESP,function(v)S.ESP=v end)mkC("Box",S.Box,function(v)S.Box=v end)
 mkC("Highlight",S.HL,function(v)S.HL=v end)mkC("Target ESP",S.TgtE,function(v)S.TgtE=v end)mkC("Chams",S.Chams,function(v)S.Chams=v end)
 end))
@@ -490,58 +481,6 @@ mkB2("🔄 REJOIN",function()pcall(function()T:TeleportToPlaceInstance(game.Plac
 mkB2("🚪 LEAVE",function()pcall(function()game:Shutdown()end)end)
 end))
 tabs[1].callback()tabs[1].btn.BackgroundColor3=Color3.fromRGB(120,50,220)tabs[1].lbl.TextColor3=Color3.fromRGB(255,255,255)tabs[1].bs.Transparency=0
-
--- SILENT AIM HOOK
-local silentTarget=nil
-local function getSilentTarget()
-local cl,sd=nil,S.SilentFOV
-local vp=Cam.ViewportSize local cen=Vector2.new(vp.X/2,vp.Y/2)
-for _,p in pairs(P:GetPlayers())do
-if p==LP then continue end
-local c=p.Character if not c then continue end
-local h=c:FindFirstChildOfClass("Humanoid")if not h or h.Health<=0 then continue end
-local part=c:FindFirstChild(S.SilentHitPart)or c:FindFirstChild("Head")or c:FindFirstChild("HumanoidRootPart")
-if not part then continue end
-if S.SilentVisibleCheck then
-local rp=RaycastParams.new()
-rp.FilterDescendantsInstances={LP.Character,Cam}
-rp.FilterType=Enum.RaycastFilterType.Exclude
-local res=workspace:Raycast(Cam.CFrame.Position,part.Position-Cam.CFrame.Position,rp)
-if res and not res.Instance:IsDescendantOf(c)then continue end
-end
-local sp,on=Cam:WorldToViewportPoint(part.Position)
-if not on then continue end
-local d=(Vector2.new(sp.X,sp.Y)-cen).Magnitude
-if d<sd then sd=d cl=part end
-end
-return cl
-end
-spawn(function()
-while true do
-task.wait(0.05)
-if S.SilentAim then silentTarget=getSilentTarget() else silentTarget=nil end
-end
-end)
-if hookmetamethod then
-local mt=hookmetamethod(game,"__namecall",function(self,...)
-if not S.SilentAim or not silentTarget then return mt(self,...) end
-local method=getnamecallmethod()
-if method=="FindPartOnRay"or method=="FindPartOnRayWithIgnoreList"or method=="FindPartOnRayWithWhitelist"or method=="Raycast"then
-if math.random(1,100)<=S.SilentHitChance then
-local args={...}
-if typeof(args[1])=="Ray"then
-args[1]=Ray.new(Cam.CFrame.Position,(silentTarget.Position-Cam.CFrame.Position).Unit*5000)
-elseif typeof(args[1])=="RaycastParams"then
-args[2]=(silentTarget.Position-Cam.CFrame.Position).Unit*5000
-elseif typeof(args[1])=="Vector3"and typeof(args[2])=="Vector3"then
-args[2]=(silentTarget.Position-Cam.CFrame.Position).Unit*5000
-end
-return mt(self,unpack(args))
-end
-end
-return mt(self,...)
-end)
-end
 
 -- HITBOX EXPANDER
 spawn(function()
@@ -1266,4 +1205,4 @@ if HD[p]then HD[p]:Remove()end if AR[p]then AR[p]:Remove()end if BM[p]then BM[p]
 if SK[p]then for _,l in pairs(SK[p])do l:Remove()end end
 if CH[p]then for _,cc in pairs(CH[p])do cc:Destroy()end end
 end)
-print("[v12 PrimDLC] @LutshiyKot loaded!")
+print("[v13 PrimDLC] @LutshiyKot loaded!")
