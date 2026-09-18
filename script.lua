@@ -29,10 +29,23 @@ AimAssist=false,AimAssistSmooth=0.5,AimAssistFOV=150,AimAssistPart="Head",
 TriggerBot=false,TriggerDelay=0.2,
 NoRecoil=false,NoSpread=false,FastReload=false,
 AutoParry=false,AutoParryRange=8,AutoParryKey="F",
+Theme="Purple",
+EmoteSpam=false,ChatSpam=false,
+AutoRejoin=false,
 }
 local C={Purple=Color3.fromRGB(180,100,255),Red=Color3.fromRGB(255,80,80),Blue=Color3.fromRGB(80,150,255),
 Green=Color3.fromRGB(80,255,120),Yellow=Color3.fromRGB(255,220,80),White=Color3.fromRGB(255,255,255),
 Pink=Color3.fromRGB(255,100,200),Cyan=Color3.fromRGB(80,255,255),Orange=Color3.fromRGB(255,150,50)}
+local Themes={
+Purple={bg=Color3.fromRGB(55,20,110),accent=Color3.fromRGB(180,100,255),accent2=Color3.fromRGB(120,200,255),text=Color3.fromRGB(255,220,255)},
+Dark={bg=Color3.fromRGB(20,20,25),accent=Color3.fromRGB(120,120,140),accent2=Color3.fromRGB(80,80,100),text=Color3.fromRGB(230,230,240)},
+Cyan={bg=Color3.fromRGB(15,45,60),accent=Color3.fromRGB(80,220,255),accent2=Color3.fromRGB(60,150,220),text=Color3.fromRGB(200,245,255)},
+Green={bg=Color3.fromRGB(15,50,25),accent=Color3.fromRGB(80,255,120),accent2=Color3.fromRGB(50,180,80),text=Color3.fromRGB(200,255,210)},
+Red={bg=Color3.fromRGB(60,15,15),accent=Color3.fromRGB(255,80,80),accent2=Color3.fromRGB(200,50,50),text=Color3.fromRGB(255,200,200)},
+Matrix={bg=Color3.fromRGB(10,20,10),accent=Color3.fromRGB(60,255,60),accent2=Color3.fromRGB(30,180,30),text=Color3.fromRGB(150,255,150)},
+Pink={bg=Color3.fromRGB(60,20,50),accent=Color3.fromRGB(255,120,220),accent2=Color3.fromRGB(200,80,180),text=Color3.fromRGB(255,200,240)},
+}
+local T1=Themes[S.Theme]or Themes.Purple
 
 local gui,MF,CT,SB,IG,OB
 local HLS,BOX,BF,NAM,DST,HPB,HPG,TRC={},{},{},{},{},{},{},{}
@@ -40,6 +53,8 @@ local HD,SK,AR,BM,CH={},{},{},{},{}
 local tabs={}
 local dmgDrawings,hitMarkerDrawings={},{}
 local kfY=0
+local playerInfoFrame=nil
+local keybindState={menu=true,key=Enum.KeyCode.RightShift}
 
 pcall(function() gui=Instance.new("ScreenGui")gui.Name="Gui"gui.ResetOnSpawn=false gui.ZIndexBehavior=Enum.ZIndexBehavior.Sibling gui.Parent=game:GetService("CoreGui") end)
 if not gui or not gui.Parent then gui=Instance.new("ScreenGui")gui.Name="Gui"gui.ResetOnSpawn=false gui.Parent=LP:WaitForChild("PlayerGui") end
@@ -48,7 +63,7 @@ local nt=Instance.new("Frame",gui)
 nt.Size=UDim2.new(0,320,0,65)nt.Position=UDim2.new(.5,-160,0,-70)nt.BackgroundColor3=Color3.fromRGB(30,10,60)
 nt.BackgroundTransparency=.1 nt.BorderSizePixel=0 nt.ZIndex=100
 Instance.new("UICorner",nt).CornerRadius=UDim.new(0,12)
-local nst=Instance.new("UIStroke",nt)nst.Color=Color3.fromRGB(200,100,255)nst.Thickness=2
+local nst=Instance.new("UIStroke",nt)nst.Color=T1.accent nst.Thickness=2
 local ntx=Instance.new("TextLabel",nt)
 ntx.Size=UDim2.new(1,-20,1,0)ntx.Position=UDim2.new(0,10,0,0)ntx.BackgroundTransparency=1
 ntx.Text="Привет от @LutshiyKot"ntx.TextColor3=Color3.fromRGB(255,255,255)ntx.TextSize=19
@@ -65,52 +80,52 @@ wmFrame.BorderSizePixel=0
 wmFrame.ZIndex=70
 Instance.new("UICorner",wmFrame).CornerRadius=UDim.new(0,8)
 local wmStroke=Instance.new("UIStroke",wmFrame)
-wmStroke.Color=Color3.fromRGB(80,80,110)wmStroke.Thickness=1 wmStroke.Transparency=0.3
+wmStroke.Color=T1.accent wmStroke.Thickness=1 wmStroke.Transparency=0.3
 local wmMoon=Instance.new("TextLabel",wmFrame)
 wmMoon.Size=UDim2.new(0,22,1,0)wmMoon.Position=UDim2.new(0,10,0,0)
 wmMoon.BackgroundTransparency=1 wmMoon.Text="🌙" wmMoon.TextSize=16
-wmMoon.Font=Enum.Font.GothamBold wmMoon.TextColor3=Color3.fromRGB(230,230,250)
+wmMoon.Font=Enum.Font.GothamBold wmMoon.TextColor3=T1.text
 wmMoon.TextXAlignment=Enum.TextXAlignment.Left wmMoon.ZIndex=71
 local wmName=Instance.new("TextLabel",wmFrame)
 wmName.Size=UDim2.new(0,80,1,0)wmName.Position=UDim2.new(0,32,0,0)
-wmName.BackgroundTransparency=1 wmName.Text="PrimDLC v14" wmName.TextSize=14
-wmName.Font=Enum.Font.GothamBold wmName.TextColor3=Color3.fromRGB(240,240,255)
+wmName.BackgroundTransparency=1 wmName.Text="PrimDLC v15" wmName.TextSize=14
+wmName.Font=Enum.Font.GothamBold wmName.TextColor3=T1.text
 wmName.TextXAlignment=Enum.TextXAlignment.Left wmName.ZIndex=71
 local d1=Instance.new("Frame",wmFrame)
 d1.Size=UDim2.new(0,1,0,20)d1.Position=UDim2.new(0,116,0.5,-10)
-d1.BackgroundColor3=Color3.fromRGB(80,80,110)d1.BorderSizePixel=0 d1.ZIndex=71
+d1.BackgroundColor3=T1.accent2 d1.BorderSizePixel=0 d1.ZIndex=71
 local fpsIco=Instance.new("Frame",wmFrame)
 fpsIco.Size=UDim2.new(0,20,0,20)fpsIco.Position=UDim2.new(0,124,0.5,-10)
-fpsIco.BackgroundColor3=Color3.fromRGB(110,95,160)fpsIco.BorderSizePixel=0 fpsIco.ZIndex=71
+fpsIco.BackgroundColor3=T1.accent fpsIco.BorderSizePixel=0 fpsIco.ZIndex=71
 Instance.new("UICorner",fpsIco).CornerRadius=UDim.new(0,5)
 local fpsIcoTxt=Instance.new("TextLabel",fpsIco)
 fpsIcoTxt.Size=UDim2.new(1,0,1,0)fpsIcoTxt.BackgroundTransparency=1
 fpsIcoTxt.Text="∿"fpsIcoTxt.TextSize=14
-fpsIcoTxt.Font=Enum.Font.GothamBold fpsIcoTxt.TextColor3=Color3.fromRGB(230,230,255)fpsIcoTxt.ZIndex=72
+fpsIcoTxt.Font=Enum.Font.GothamBold fpsIcoTxt.TextColor3=Color3.fromRGB(255,255,255)fpsIcoTxt.ZIndex=72
 local fpsTxt=Instance.new("TextLabel",wmFrame)
 fpsTxt.Size=UDim2.new(0,50,1,0)fpsTxt.Position=UDim2.new(0,148,0,0)
 fpsTxt.BackgroundTransparency=1 fpsTxt.Text="60 fps" fpsTxt.TextSize=13
-fpsTxt.Font=Enum.Font.GothamBold fpsTxt.TextColor3=Color3.fromRGB(240,240,250)
+fpsTxt.Font=Enum.Font.GothamBold fpsTxt.TextColor3=T1.text
 fpsTxt.TextXAlignment=Enum.TextXAlignment.Left fpsTxt.ZIndex=71
 local d2=Instance.new("Frame",wmFrame)
 d2.Size=UDim2.new(0,1,0,20)d2.Position=UDim2.new(0,200,0.5,-10)
-d2.BackgroundColor3=Color3.fromRGB(80,80,110)d2.BorderSizePixel=0 d2.ZIndex=71
+d2.BackgroundColor3=T1.accent2 d2.BorderSizePixel=0 d2.ZIndex=71
 local pingIco=Instance.new("Frame",wmFrame)
 pingIco.Size=UDim2.new(0,20,0,20)pingIco.Position=UDim2.new(0,208,0.5,-10)
-pingIco.BackgroundColor3=Color3.fromRGB(110,95,160)pingIco.BorderSizePixel=0 pingIco.ZIndex=71
+pingIco.BackgroundColor3=T1.accent pingIco.BorderSizePixel=0 pingIco.ZIndex=71
 Instance.new("UICorner",pingIco).CornerRadius=UDim.new(0,5)
 local pingIcoTxt=Instance.new("TextLabel",pingIco)
 pingIcoTxt.Size=UDim2.new(1,0,1,0)pingIcoTxt.BackgroundTransparency=1
 pingIcoTxt.Text="●"pingIcoTxt.TextSize=11
-pingIcoTxt.Font=Enum.Font.GothamBold pingIcoTxt.TextColor3=Color3.fromRGB(230,230,255)pingIcoTxt.ZIndex=72
+pingIcoTxt.Font=Enum.Font.GothamBold pingIcoTxt.TextColor3=Color3.fromRGB(255,255,255)pingIcoTxt.ZIndex=72
 local pingTxt=Instance.new("TextLabel",wmFrame)
 pingTxt.Size=UDim2.new(0,55,1,0)pingTxt.Position=UDim2.new(0,232,0,0)
 pingTxt.BackgroundTransparency=1 pingTxt.Text="0 ms" pingTxt.TextSize=13
-pingTxt.Font=Enum.Font.GothamBold pingTxt.TextColor3=Color3.fromRGB(240,240,250)
+pingTxt.Font=Enum.Font.GothamBold pingTxt.TextColor3=T1.text
 pingTxt.TextXAlignment=Enum.TextXAlignment.Left pingTxt.ZIndex=71
 
 MF=Instance.new("Frame",gui)
-MF.Size=UDim2.new(0,460,0,340)MF.Position=UDim2.new(.5,-230,.5,-170)MF.BackgroundColor3=Color3.fromRGB(55,20,110)
+MF.Size=UDim2.new(0,460,0,340)MF.Position=UDim2.new(.5,-230,.5,-170)MF.BackgroundColor3=T1.bg
 MF.BackgroundTransparency=.15 MF.BorderSizePixel=0 MF.Active=true MF.Draggable=true MF.ZIndex=2
 Instance.new("UICorner",MF).CornerRadius=UDim.new(0,14)
 
@@ -120,7 +135,7 @@ local g=Instance.new("Frame",MF)
 g.AnchorPoint=Vector2.new(0.5,0.5)
 g.Position=UDim2.new(0.5,0,0.5,0)
 g.Size=UDim2.new(1,i*12,1,i*12)
-g.BackgroundColor3=Color3.fromRGB(200,100,255)
+g.BackgroundColor3=T1.accent
 g.BackgroundTransparency=.9+i*.012
 g.BorderSizePixel=0
 g.ZIndex=0
@@ -129,31 +144,27 @@ table.insert(GL,g)
 end
 
 local GR=Instance.new("UIGradient",MF)
-GR.Color=ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(150,40,230)),ColorSequenceKeypoint.new(.5,Color3.fromRGB(70,20,150)),ColorSequenceKeypoint.new(1,Color3.fromRGB(120,40,200))})
+GR.Color=ColorSequence.new({ColorSequenceKeypoint.new(0,T1.accent),ColorSequenceKeypoint.new(.5,T1.bg),ColorSequenceKeypoint.new(1,T1.accent2)})
 GR.Rotation=45
 IG=Instance.new("Frame",MF)
-IG.Size=UDim2.new(1,0,1,0)IG.BackgroundColor3=Color3.fromRGB(200,100,255)IG.BackgroundTransparency=.82
+IG.Size=UDim2.new(1,0,1,0)IG.BackgroundColor3=T1.accent IG.BackgroundTransparency=.82
 IG.BorderSizePixel=0 IG.ZIndex=2
 Instance.new("UICorner",IG).CornerRadius=UDim.new(0,14)
-local N1=Instance.new("UIStroke",MF)N1.Color=Color3.fromRGB(220,120,255)N1.Thickness=2
-local N2=Instance.new("UIStroke",MF)N2.Color=Color3.fromRGB(120,200,255)N2.Thickness=4 N2.Transparency=.4
-local N3=Instance.new("UIStroke",MF)N3.Color=Color3.fromRGB(255,100,220)N3.Thickness=8 N3.Transparency=.7
+local N1=Instance.new("UIStroke",MF)N1.Color=T1.accent N1.Thickness=2
+local N2=Instance.new("UIStroke",MF)N2.Color=T1.accent2 N2.Thickness=4 N2.Transparency=.4
+local N3=Instance.new("UIStroke",MF)N3.Color=T1.accent N3.Thickness=8 N3.Transparency=.7
 
 spawn(function()
 local t=0
 while MF.Parent do
 t=t+.05
 local r=(math.sin(t)+1)/2 local g=(math.sin(t+2)+1)/2 local b=(math.sin(t+4)+1)/2
-N1.Color=Color3.fromRGB(math.floor(180+75*r),math.floor(80+120*g),math.floor(220+35*b))
-N2.Color=Color3.fromRGB(math.floor(100+100*b),math.floor(150+100*r),math.floor(220+35*g))
-N3.Color=Color3.fromRGB(math.floor(220+35*b),math.floor(80+120*g),math.floor(200+55*r))
-GR.Color=ColorSequence.new({ColorSequenceKeypoint.new(0,Color3.fromRGB(math.floor(120+50*r),math.floor(30+30*g),math.floor(200+40*b))),ColorSequenceKeypoint.new(.5,Color3.fromRGB(50,15,120)),ColorSequenceKeypoint.new(1,Color3.fromRGB(math.floor(100+50*g),math.floor(30+30*b),math.floor(170+50*r)))})
+N1.Color=Color3.fromRGB(math.floor(150+75*r),math.floor(60+120*g),math.floor(200+35*b))
+N2.Color=Color3.fromRGB(math.floor(80+100*b),math.floor(150+100*r),math.floor(200+35*g))
+N3.Color=Color3.fromRGB(math.floor(200+35*b),math.floor(80+120*g),math.floor(180+55*r))
 GR.Rotation=(t*25)%360
-IG.BackgroundColor3=Color3.fromRGB(math.floor(150+80*r),math.floor(60+100*g),math.floor(200+55*b))
 IG.BackgroundTransparency=.78+.08*r
-MF.BackgroundColor3=Color3.fromRGB(math.floor(45+30*r),math.floor(15+15*g),math.floor(90+40*b))
 for i,gl in ipairs(GL) do
-gl.BackgroundColor3=Color3.fromRGB(math.floor(140+100*r),math.floor(60+100*g),math.floor(200+55*b))
 gl.BackgroundTransparency=.86+i*.015+.04*(1-r)
 end
 R.Heartbeat:Wait()
@@ -161,14 +172,14 @@ end
 end)
 
 local HD1=Instance.new("Frame",MF)
-HD1.Size=UDim2.new(1,0,0,42)HD1.BackgroundColor3=Color3.fromRGB(80,30,150)HD1.BackgroundTransparency=.35
+HD1.Size=UDim2.new(1,0,0,42)HD1.BackgroundColor3=T1.accent HD1.BackgroundTransparency=.5
 HD1.BorderSizePixel=0 HD1.ZIndex=3
 Instance.new("UICorner",HD1).CornerRadius=UDim.new(0,14)
 local HF=Instance.new("Frame",HD1)
-HF.Size=UDim2.new(1,0,0,14)HF.Position=UDim2.new(0,0,1,-14)HF.BackgroundColor3=Color3.fromRGB(80,30,150)
-HF.BackgroundTransparency=.35 HF.BorderSizePixel=0 HF.ZIndex=3
+HF.Size=UDim2.new(1,0,0,14)HF.Position=UDim2.new(0,0,1,-14)HF.BackgroundColor3=T1.accent
+HF.BackgroundTransparency=.5 HF.BorderSizePixel=0 HF.ZIndex=3
 local AV=Instance.new("TextLabel",HD1)
-AV.Size=UDim2.new(0,26,0,26)AV.Position=UDim2.new(0,10,0,8)AV.BackgroundColor3=Color3.fromRGB(80,40,140)
+AV.Size=UDim2.new(0,26,0,26)AV.Position=UDim2.new(0,10,0,8)AV.BackgroundColor3=T1.bg
 AV.Text="👑"AV.TextSize=15 AV.Font=Enum.Font.GothamBold AV.BorderSizePixel=0 AV.ZIndex=4
 Instance.new("UICorner",AV).CornerRadius=UDim.new(0,7)
 local TL=Instance.new("TextLabel",HD1)
@@ -177,30 +188,30 @@ TL.Text="@LutshiyKot"TL.TextColor3=Color3.fromRGB(255,255,255)TL.TextSize=14
 TL.Font=Enum.Font.GothamBold TL.TextXAlignment=Enum.TextXAlignment.Left TL.ZIndex=4
 local SL=Instance.new("TextLabel",HD1)
 SL.Size=UDim2.new(1,-180,0,14)SL.Position=UDim2.new(0,44,0,22)SL.BackgroundTransparency=1
-SL.Text="by @LutshiyKot"SL.TextColor3=Color3.fromRGB(230,200,255)SL.TextSize=10
+SL.Text="by @LutshiyKot"SL.TextColor3=T1.text SL.TextSize=10
 SL.Font=Enum.Font.Gotham SL.TextXAlignment=Enum.TextXAlignment.Left SL.ZIndex=4
 
 local function mkb(t,x,cb)
 local b=Instance.new("TextButton",HD1)
-b.Size=UDim2.new(0,26,0,26)b.Position=UDim2.new(1,x,0,6)b.BackgroundColor3=Color3.fromRGB(60,25,110)
+b.Size=UDim2.new(0,26,0,26)b.Position=UDim2.new(1,x,0,6)b.BackgroundColor3=T1.bg
 b.BackgroundTransparency=.15 b.Text=t b.TextColor3=Color3.fromRGB(255,255,255)b.TextSize=13
 b.Font=Enum.Font.GothamBold b.BorderSizePixel=0 b.AutoButtonColor=false b.ZIndex=4
 Instance.new("UICorner",b).CornerRadius=UDim.new(0,7)
-local bs=Instance.new("UIStroke",b)bs.Color=Color3.fromRGB(220,130,255)bs.Thickness=1 bs.Transparency=.1
+local bs=Instance.new("UIStroke",b)bs.Color=T1.accent bs.Thickness=1 bs.Transparency=.1
 b.MouseButton1Click:Connect(cb)
 end
 
 SB=Instance.new("Frame",MF)
-SB.Size=UDim2.new(0,115,1,-55)SB.Position=UDim2.new(0,10,0,48)SB.BackgroundColor3=Color3.fromRGB(70,25,130)
+SB.Size=UDim2.new(0,115,1,-55)SB.Position=UDim2.new(0,10,0,48)SB.BackgroundColor3=T1.bg
 SB.BackgroundTransparency=.55 SB.BorderSizePixel=0 SB.ZIndex=3
 Instance.new("UICorner",SB).CornerRadius=UDim.new(0,10)
-local sbs=Instance.new("UIStroke",SB)sbs.Color=Color3.fromRGB(200,120,255)sbs.Thickness=1 sbs.Transparency=.3
+local sbs=Instance.new("UIStroke",SB)sbs.Color=T1.accent sbs.Thickness=1 sbs.Transparency=.3
 local sbl=Instance.new("UIListLayout",SB)sbl.Padding=UDim.new(0,4)
 local sbp=Instance.new("UIPadding",SB)sbp.PaddingTop=UDim.new(0,6)sbp.PaddingLeft=UDim.new(0,6)sbp.PaddingRight=UDim.new(0,6)
 
 CT=Instance.new("ScrollingFrame",MF)
 CT.Size=UDim2.new(1,-135,1,-55)CT.Position=UDim2.new(0,130,0,48)CT.BackgroundTransparency=1 CT.BorderSizePixel=0
-CT.ScrollBarThickness=3 CT.ScrollBarImageColor3=Color3.fromRGB(220,130,255)CT.CanvasSize=UDim2.new(0,0,0,0)
+CT.ScrollBarThickness=3 CT.ScrollBarImageColor3=T1.accent CT.CanvasSize=UDim2.new(0,0,0,0)
 CT.AutomaticCanvasSize=Enum.AutomaticSize.Y CT.ZIndex=4
 local cl=Instance.new("UIListLayout",CT)cl.Padding=UDim.new(0,5)
 
@@ -220,32 +231,32 @@ mkb("□",-60,function()setMin(false)end)
 mkb("X",-30,function()MF.Visible=false if OB then OB.Visible=true end end)
 
 OB=Instance.new("TextButton",gui)
-OB.Size=UDim2.new(0,45,0,45)OB.Position=UDim2.new(0,20,0,100)OB.BackgroundColor3=Color3.fromRGB(60,25,110)
-OB.Text="⚡"OB.TextColor3=Color3.fromRGB(255,255,255)OB.TextSize=20 OB.Font=Enum.Font.GothamBold
+OB.Size=UDim2.new(0,45,0,45)OB.Position=UDim2.new(0,20,0,100)OB.BackgroundColor3=T1.bg
+OB.Text="⚡"OB.TextColor3=T1.text OB.TextSize=20 OB.Font=Enum.Font.GothamBold
 OB.BorderSizePixel=0 OB.Visible=false OB.ZIndex=50
 Instance.new("UICorner",OB).CornerRadius=UDim.new(1,0)
-local obs=Instance.new("UIStroke",OB)obs.Color=Color3.fromRGB(220,130,255)obs.Thickness=2
+local obs=Instance.new("UIStroke",OB)obs.Color=T1.accent obs.Thickness=2
 OB.MouseButton1Click:Connect(function()MF.Visible=true setMin(false)OB.Visible=false end)
 
 local function mkSec(t)
 local l=Instance.new("TextLabel",CT)
 l.Size=UDim2.new(1,-6,0,22)l.BackgroundTransparency=1
-l.Text=t l.TextColor3=Color3.fromRGB(255,220,255)l.TextSize=13
+l.Text=t l.TextColor3=T1.text l.TextSize=13
 l.Font=Enum.Font.GothamBold l.TextXAlignment=Enum.TextXAlignment.Left l.ZIndex=5
 end
 local function mkC(t,d,cb)
 local c=Instance.new("TextButton",CT)
-c.Size=UDim2.new(1,-6,0,36)c.BackgroundColor3=Color3.fromRGB(60,25,120)c.BackgroundTransparency=.3
+c.Size=UDim2.new(1,-6,0,36)c.BackgroundColor3=T1.bg c.BackgroundTransparency=.3
 c.Text=""c.BorderSizePixel=0 c.AutoButtonColor=false c.ZIndex=4
 Instance.new("UICorner",c).CornerRadius=UDim.new(0,9)
-local cs=Instance.new("UIStroke",c)cs.Color=Color3.fromRGB(200,120,255)cs.Thickness=1 cs.Transparency=.2
+local cs=Instance.new("UIStroke",c)cs.Color=T1.accent cs.Thickness=1 cs.Transparency=.2
 local l=Instance.new("TextLabel",c)
 l.Size=UDim2.new(1,-60,1,0)l.Position=UDim2.new(0,14,0,0)l.BackgroundTransparency=1
-l.Text=t l.TextColor3=Color3.fromRGB(255,240,255)l.TextSize=12
+l.Text=t l.TextColor3=T1.text l.TextSize=12
 l.Font=Enum.Font.GothamBold l.TextXAlignment=Enum.TextXAlignment.Left l.ZIndex=5
 local tg=Instance.new("Frame",c)
 tg.Size=UDim2.new(0,36,0,18)tg.Position=UDim2.new(1,-46,.5,-9)
-tg.BackgroundColor3=d and Color3.fromRGB(200,100,255) or Color3.fromRGB(80,40,130)
+tg.BackgroundColor3=d and T1.accent or T1.bg
 tg.BorderSizePixel=0 tg.ZIndex=5
 Instance.new("UICorner",tg).CornerRadius=UDim.new(1,0)
 local k=Instance.new("Frame",tg)
@@ -255,35 +266,35 @@ Instance.new("UICorner",k).CornerRadius=UDim.new(1,0)
 local st=d
 c.MouseButton1Click:Connect(function()
 st=not st cb(st)
-tg.BackgroundColor3=st and Color3.fromRGB(200,100,255) or Color3.fromRGB(80,40,130)
+tg.BackgroundColor3=st and T1.accent or T1.bg
 k:TweenPosition(st and UDim2.new(1,-16,.5,-7) or UDim2.new(0,2,.5,-7),"Out","Quad",.15,true)
 end)
 end
 local function mkB2(t,cb)
 local b=Instance.new("TextButton",CT)
-b.Size=UDim2.new(1,-6,0,36)b.BackgroundColor3=Color3.fromRGB(80,30,150)b.BackgroundTransparency=.2
-b.Text=t b.TextColor3=Color3.fromRGB(255,240,255)b.TextSize=12
+b.Size=UDim2.new(1,-6,0,36)b.BackgroundColor3=T1.accent b.BackgroundTransparency=.5
+b.Text=t b.TextColor3=T1.text b.TextSize=12
 b.Font=Enum.Font.GothamBold b.BorderSizePixel=0 b.AutoButtonColor=false b.ZIndex=4
 Instance.new("UICorner",b).CornerRadius=UDim.new(0,9)
-local bs=Instance.new("UIStroke",b)bs.Color=Color3.fromRGB(255,150,255)bs.Thickness=1.5 bs.Transparency=.1
+local bs=Instance.new("UIStroke",b)bs.Color=T1.accent bs.Thickness=1.5 bs.Transparency=.1
 b.MouseButton1Click:Connect(function()bs.Transparency=0 task.wait(.1)bs.Transparency=.1 cb()end)
 end
 local function mkSl(t,mn,mx,d,cb)
 local f=Instance.new("Frame",CT)
-f.Size=UDim2.new(1,-6,0,52)f.BackgroundColor3=Color3.fromRGB(60,25,120)f.BackgroundTransparency=.3
+f.Size=UDim2.new(1,-6,0,52)f.BackgroundColor3=T1.bg f.BackgroundTransparency=.3
 f.BorderSizePixel=0 f.ZIndex=4
 Instance.new("UICorner",f).CornerRadius=UDim.new(0,9)
-local cs=Instance.new("UIStroke",f)cs.Color=Color3.fromRGB(200,120,255)cs.Thickness=1 cs.Transparency=.2
+local cs=Instance.new("UIStroke",f)cs.Color=T1.accent cs.Thickness=1 cs.Transparency=.2
 local l=Instance.new("TextLabel",f)
 l.Size=UDim2.new(1,-20,0,18)l.Position=UDim2.new(0,14,0,5)l.BackgroundTransparency=1
-l.Text=t..": "..tostring(d)l.TextColor3=Color3.fromRGB(255,240,255)l.TextSize=12
+l.Text=t..": "..tostring(d)l.TextColor3=T1.text l.TextSize=12
 l.Font=Enum.Font.GothamBold l.TextXAlignment=Enum.TextXAlignment.Left l.ZIndex=5
 local bg=Instance.new("Frame",f)
-bg.Size=UDim2.new(1,-28,0,7)bg.Position=UDim2.new(0,14,0,32)bg.BackgroundColor3=Color3.fromRGB(60,30,100)
+bg.Size=UDim2.new(1,-28,0,7)bg.Position=UDim2.new(0,14,0,32)bg.BackgroundColor3=T1.bg
 bg.BorderSizePixel=0 bg.ZIndex=5
 Instance.new("UICorner",bg).CornerRadius=UDim.new(1,0)
 local fl=Instance.new("Frame",bg)
-fl.Size=UDim2.new((d-mn)/(mx-mn),0,1,0)fl.BackgroundColor3=Color3.fromRGB(220,120,255)
+fl.Size=UDim2.new((d-mn)/(mx-mn),0,1,0)fl.BackgroundColor3=T1.accent
 fl.BorderSizePixel=0 fl.ZIndex=6
 Instance.new("UICorner",fl).CornerRadius=UDim.new(1,0)
 local dr=false
@@ -299,17 +310,17 @@ U.InputEnded:Connect(function(i)if i.UserInputType==Enum.UserInputType.MouseButt
 end
 local function mkDr(t,op,d,cb)
 local b=Instance.new("TextButton",CT)
-b.Size=UDim2.new(1,-6,0,36)b.BackgroundColor3=Color3.fromRGB(60,25,120)b.BackgroundTransparency=.3
+b.Size=UDim2.new(1,-6,0,36)b.BackgroundColor3=T1.bg b.BackgroundTransparency=.3
 b.Text=""b.BorderSizePixel=0 b.AutoButtonColor=false b.ZIndex=4
 Instance.new("UICorner",b).CornerRadius=UDim.new(0,9)
-local cs=Instance.new("UIStroke",b)cs.Color=Color3.fromRGB(200,120,255)cs.Thickness=1 cs.Transparency=.2
+local cs=Instance.new("UIStroke",b)cs.Color=T1.accent cs.Thickness=1 cs.Transparency=.2
 local l=Instance.new("TextLabel",b)
 l.Size=UDim2.new(.5,-10,1,0)l.Position=UDim2.new(0,14,0,0)l.BackgroundTransparency=1
-l.Text=t l.TextColor3=Color3.fromRGB(255,240,255)l.TextSize=12
+l.Text=t l.TextColor3=T1.text l.TextSize=12
 l.Font=Enum.Font.GothamBold l.TextXAlignment=Enum.TextXAlignment.Left l.ZIndex=5
 local v=Instance.new("TextLabel",b)
 v.Size=UDim2.new(.5,-14,1,0)v.Position=UDim2.new(.5,0,0,0)v.BackgroundTransparency=1
-v.Text=d v.TextColor3=Color3.fromRGB(255,200,255)v.TextSize=12
+v.Text=d v.TextColor3=T1.accent v.TextSize=12
 v.Font=Enum.Font.GothamBold v.TextXAlignment=Enum.TextXAlignment.Right v.ZIndex=5
 local i=1
 for x,o in ipairs(op) do if o==d then i=x break end end
@@ -322,20 +333,20 @@ end
 end
 local function mkT(name,icon,cb)
 local b=Instance.new("TextButton",SB)
-b.Size=UDim2.new(1,0,0,28)b.BackgroundColor3=Color3.fromRGB(60,25,120)b.BackgroundTransparency=.5
+b.Size=UDim2.new(1,0,0,28)b.BackgroundColor3=T1.bg b.BackgroundTransparency=.5
 b.Text=""b.BorderSizePixel=0 b.AutoButtonColor=false b.ZIndex=4
 Instance.new("UICorner",b).CornerRadius=UDim.new(0,8)
-local bs=Instance.new("UIStroke",b)bs.Color=Color3.fromRGB(180,100,255)bs.Thickness=1 bs.Transparency=.6
+local bs=Instance.new("UIStroke",b)bs.Color=T1.accent bs.Thickness=1 bs.Transparency=.6
 local l=Instance.new("TextLabel",b)
 l.Size=UDim2.new(1,-32,1,0)l.Position=UDim2.new(0,26,0,0)l.BackgroundTransparency=1
-l.Text=name l.TextColor3=Color3.fromRGB(220,200,255)l.TextSize=10
+l.Text=name l.TextColor3=T1.text l.TextSize=10
 l.Font=Enum.Font.GothamBold l.TextXAlignment=Enum.TextXAlignment.Left l.ZIndex=5
 local ic=Instance.new("TextLabel",b)
 ic.Size=UDim2.new(0,18,1,0)ic.Position=UDim2.new(0,8,0,0)ic.BackgroundTransparency=1
 ic.Text=icon ic.TextSize=11 ic.Font=Enum.Font.GothamBold ic.ZIndex=5
 b.MouseButton1Click:Connect(function()
-for _,t in pairs(tabs) do t.btn.BackgroundColor3=Color3.fromRGB(60,25,120)t.lbl.TextColor3=Color3.fromRGB(220,200,255)t.bs.Transparency=.6 end
-b.BackgroundColor3=Color3.fromRGB(120,50,220)l.TextColor3=Color3.fromRGB(255,255,255)bs.Transparency=0 cb()
+for _,t in pairs(tabs) do t.btn.BackgroundColor3=T1.bg t.lbl.TextColor3=T1.text t.bs.Transparency=.6 end
+b.BackgroundColor3=T1.accent l.TextColor3=Color3.fromRGB(255,255,255)bs.Transparency=0 cb()
 end)
 return{btn=b,lbl=l,bs=bs,callback=cb}
 end
@@ -360,7 +371,6 @@ mkC("Prediction",S.Pred,function(v)S.Pred=v end)mkC("Wall Check",S.VisChk,functi
 mkSec("ESP")mkC("ESP",S.ESP,function(v)S.ESP=v end)mkC("Box",S.Box,function(v)S.Box=v end)
 mkC("Highlight",S.HL,function(v)S.HL=v end)mkC("Target ESP",S.TgtE,function(v)S.TgtE=v end)mkC("Chams",S.Chams,function(v)S.Chams=v end)
 end))
-
 table.insert(tabs,mkT("Legit","🕊",function()
 clr()
 mkSec("Aim Assist (Legit)")
@@ -379,7 +389,6 @@ mkSec("Auto Parry")
 mkC("Enable Auto Parry",S.AutoParry,function(v)S.AutoParry=v end)
 mkSl("Parry Range",3,20,S.AutoParryRange,function(v)S.AutoParryRange=v end)
 end))
-
 table.insert(tabs,mkT("Target","🎯",function()
 clr()
 mkSec("Target ESP (CS Style)")
@@ -388,7 +397,6 @@ mkC("HP",S.TgtHP,function(v)S.TgtHP=v end)mkC("Distance",S.TgtDist,function(v)S.
 mkC("Only Locked",S.TgtLock,function(v)S.TgtLock=v end)
 mkSec("Style")mkDr("Color",{"Red","Yellow","Green","Cyan","White","Purple"},S.TgtCol,function(v)S.TgtCol=v end)
 end))
-
 table.insert(tabs,mkT("Aim","⚔",function()
 clr()
 mkSec("Aimbot")mkC("Aimbot",S.Aim,function(v)S.Aim=v end)mkC("Prediction",S.Pred,function(v)S.Pred=v end)
@@ -398,7 +406,6 @@ mkDr("FOV Color",{"Purple","Red","Blue","Green","Yellow","White","Pink","Cyan","
 mkSl("FOV",50,800,S.FOV,function(v)S.FOV=v end)mkSl("Smooth",0,95,S.Smooth*100,function(v)S.Smooth=v/100 end)
 mkSl("Max Dist",50,2000,S.MaxD,function(v)S.MaxD=v end)
 end))
-
 table.insert(tabs,mkT("Visual","🎨",function()
 clr()
 mkSec("ESP")mkC("ESP",S.ESP,function(v)S.ESP=v end)mkC("Box",S.Box,function(v)S.Box=v end)
@@ -415,7 +422,6 @@ mkDr("Crosshair Style",{"Dot","Cross","Circle","X"},S.CrossSty,function(v)S.Cros
 mkSec("Watermark")mkC("Show Watermark",S.WM,function(v)wmFrame.Visible=v end)
 mkC("FPS",S.FPS,function(v)S.FPS=v end)mkC("Ping",S.Ping,function(v)S.Ping=v end)
 end))
-
 table.insert(tabs,mkT("FX","✨",function()
 clr()
 mkSec("Weather")mkC("Snow",S.Snow,function(v)S.Snow=v end)
@@ -429,25 +435,35 @@ mkC("Color Correction",S.CC,function(v)S.CC=v end)
 mkDr("CC Mode",{"None","Red","Blue","Green","Matrix","Cinematic"},S.CCM,function(v)S.CCM=v end)
 mkC("Sun Rays",S.SunR,function(v)S.SunR=v end)mkC("Atmosphere",S.Atm,function(v)S.Atm=v end)
 end))
-
 table.insert(tabs,mkT("ExtraV","💠",function()
 clr()
-mkSec("FPS")
-mkC("FPS Unlocker",S.FPSUnlocker,function(v)S.FPSUnlocker=v end)
+mkSec("FPS")mkC("FPS Unlocker",S.FPSUnlocker,function(v)S.FPSUnlocker=v end)
 mkSl("FPS Limit",60,360,S.FPSLimit,function(v)S.FPSLimit=v end)
-mkSec("Aura (Sphere)")
+mkSec("Aura Sphere")
 mkDr("Aura Color",{"Purple","Red","Blue","Green","Yellow","Cyan","Pink","White"},S.AuraColor,function(v)S.AuraColor=v end)
 mkSl("Aura Size",3,15,S.AuraSize,function(v)S.AuraSize=v end)
-mkSec("Sky Presets")
-mkDr("Preset",{"None","Night","Sunset","Space","Red","Neon","Cyberpunk","Retrowave","Horror"},S.SkyPreset,function(v)S.SkyPreset=v end)
-mkSec("Visuals")
-mkC("Damage Numbers",S.DamageNumbers,function(v)S.DamageNumbers=v end)
+mkSec("Sky Presets")mkDr("Preset",{"None","Night","Sunset","Space","Red","Neon","Cyberpunk","Retrowave","Horror"},S.SkyPreset,function(v)S.SkyPreset=v end)
+mkSec("Visuals")mkC("Damage Numbers",S.DamageNumbers,function(v)S.DamageNumbers=v end)
 mkC("Hit Marker",S.HitMarker,function(v)S.HitMarker=v end)
 mkC("Kill Feed",S.KillFeed,function(v)S.KillFeed=v end)
-mkSec("Hat")
-mkDr("Hat Type",{"China","Tophat","Crown","Halo"},S.HatType,function(v)S.HatType=v end)
+mkSec("Hat")mkDr("Hat Type",{"China","Tophat","Crown","Halo"},S.HatType,function(v)S.HatType=v end)
 end))
-
+table.insert(tabs,mkT("Game","🎮",function()
+clr()
+mkSec("Blade Ball")mkC("Auto Parry",S.BladeBallParry,function(v)S.BladeBallParry=v end)
+mkSec("BedWars")mkC("Auto Bed Break",S.BedWarsAuto,function(v)S.BedWarsAuto=v end)
+mkSec("Arsenal")mkC("Auto Fire",S.ArsenalAuto,function(v)S.ArsenalAuto=v end)
+mkSec("Jailbreak")mkC("Auto Rob",S.JailbreakAuto,function(v)S.JailbreakAuto=v end)
+mkSec("Pet Sim")mkC("Auto Collect",S.PetSimAuto,function(v)S.PetSimAuto=v end)
+mkSec("Blox Fruits")mkC("Auto Farm",S.BloxFruitsAuto,function(v)S.BloxFruitsAuto=v end)
+mkSec("Spam")mkC("Emote Spam",S.EmoteSpam,function(v)S.EmoteSpam=v end)
+mkC("Chat Spam",S.ChatSpam,function(v)S.ChatSpam=v end)
+end))
+table.insert(tabs,mkT("Theme","🌈",function()
+clr()
+mkSec("UI Theme")mkDr("Theme",{"Purple","Dark","Cyan","Green","Red","Matrix","Pink"},S.Theme,function(v)S.Theme=v end)
+mkSec("Behavior")mkC("Auto Hide Menu",S.AutoHide,function(v)S.AutoHide=v end)
+end))
 table.insert(tabs,mkT("Sound","🔊",function()
 clr()
 mkSec("Hit Sound")mkC("Enable Hit Sound",S.HSnd,function(v)S.HSnd=v end)
@@ -460,7 +476,6 @@ mkSec("Particle Aura")mkC("Enable Aura",S.Aura,function(v)S.Aura=v end)
 mkDr("Aura Type",{"Fire","Sparkle","Lightning","Snow","Neon","Rainbow"},S.AuraT,function(v)S.AuraT=v end)
 mkSl("Aura Rate",5,100,S.AuraR,function(v)S.AuraR=v end)
 end))
-
 table.insert(tabs,mkT("Extras","⚡",function()
 clr()
 mkSec("Lighting")mkC("Fullbright",S.FB,function(v)
@@ -468,20 +483,16 @@ S.FB=v
 if v then L.Brightness=3 L.ClockTime=14 L.FogEnd=100000 L.GlobalShadows=false else L.Brightness=1 L.GlobalShadows=true end
 end)
 mkC("No Fog",S.NF,function(v)S.NF=v L.FogEnd=v and 100000 or 1000 end)
-mkSec("Combat")
-mkC("Hitbox Expander",S.HitboxExpander,function(v)S.HitboxExpander=v end)
+mkSec("Combat")mkC("Hitbox Expander",S.HitboxExpander,function(v)S.HitboxExpander=v end)
 mkSl("Hitbox Size",3,15,S.HitboxSize,function(v)S.HitboxSize=v end)
 mkC("Kill Aura",S.KillAura,function(v)S.KillAura=v end)
 mkSl("Aura Range",5,50,S.KillAuraRange,function(v)S.KillAuraRange=v end)
 mkC("Auto Dodge",S.AutoDodge,function(v)S.AutoDodge=v end)
 mkSl("Dodge Range",10,60,S.AutoDodgeRange,function(v)S.AutoDodgeRange=v end)
-mkSec("Teleport")
-mkC("TP to Nearest",S.TeleportMenu,function(v)S.TeleportMenu=v end)
-mkSec("Anti-Bot")
-mkC("Spin Bot",S.SpinBot,function(v)S.SpinBot=v end)
+mkSec("Teleport")mkC("TP to Nearest",S.TeleportMenu,function(v)S.TeleportMenu=v end)
+mkSec("Anti-Bot")mkC("Spin Bot",S.SpinBot,function(v)S.SpinBot=v end)
 mkSl("Spin Speed",5,30,S.SpinBotSpeed,function(v)S.SpinBotSpeed=v end)
-mkSec("Camera")
-mkC("Third Person",S.ThirdPerson,function(v)S.ThirdPerson=v end)
+mkSec("Camera")mkC("Third Person",S.ThirdPerson,function(v)S.ThirdPerson=v end)
 mkSl("TP Distance",5,20,S.ThirdPersonDist,function(v)S.ThirdPersonDist=v end)
 mkC("Custom FOV",S.CamFOVe,function(v)S.CamFOVe=v Cam.FieldOfView=v and S.CamFOV or 70 end)
 mkSl("Camera FOV",30,120,S.CamFOV,function(v)S.CamFOV=v if S.CamFOVe then Cam.FieldOfView=v end end)
@@ -499,7 +510,6 @@ mkSl("Walk Speed",16,200,S.Spd,function(v)S.Spd=v local h=LP.Character and LP.Ch
 mkSl("Jump Power",50,300,S.Jmp,function(v)S.Jmp=v local h=LP.Character and LP.Character:FindFirstChildOfClass("Humanoid")if h then h.JumpPower=v end end)
 mkSl("Fly Speed",10,300,S.FlyS,function(v)S.FlyS=v end)
 end))
-
 table.insert(tabs,mkT("Player","👤",function()
 clr()
 mkSec("Utility")mkB2("🔄 RESET",function()local c=LP.Character if c then local h=c:FindFirstChildOfClass("Humanoid")if h then h.Health=0 end end end)
@@ -534,52 +544,161 @@ end)
 mkB2("🔄 REJOIN",function()pcall(function()T:TeleportToPlaceInstance(game.PlaceId,game.JobId,LP)end)end)
 mkB2("🚪 LEAVE",function()pcall(function()game:Shutdown()end)end)
 end))
-tabs[1].callback()tabs[1].btn.BackgroundColor3=Color3.fromRGB(120,50,220)tabs[1].lbl.TextColor3=Color3.fromRGB(255,255,255)tabs[1].bs.Transparency=0
+tabs[1].callback()tabs[1].btn.BackgroundColor3=T1.accent tabs[1].lbl.TextColor3=Color3.fromRGB(255,255,255)tabs[1].bs.Transparency=0
+
+-- KEYBIND MENU
+U.InputBegan:Connect(function(input)
+if input.KeyCode==Enum.KeyCode.RightShift then
+local v=not MF.Visible
+MF.Visible=v
+for _,g in ipairs(GL) do g.Visible=v end
+end
+end)
+
+-- CHAT SPAM
+spawn(function()
+while true do
+task.wait(2)
+if S.ChatSpam then
+pcall(function()
+local chat=game:GetService("ReplicatedStorage"):FindFirstChild("DefaultChatSystemChatEvents")
+if chat then
+local say=chat:FindFirstChild("SayMessageRequest")
+if say then say:FireServer("PrimDLC v15","All")end
+end
+end)
+end
+end
+end)
 
 -- FPS UNLOCKER
 spawn(function()
 while true do
 task.wait(1)
-if S.FPSUnlocker then pcall(function() setfpscap(S.FPSLimit) end)
-else pcall(function() setfpscap(60) end) end
+if S.FPSUnlocker then pcall(function() setfpscap(S.FPSLimit) end) end
 end
 end)
 
--- AURA SPHERE
-local auraSphere=nil
+-- BLADE BALL
+spawn(function()
+while true do
+task.wait(0.05)
+if S.BladeBallParry then
+pcall(function()
+local ball=workspace:FindFirstChild("Ball")
+local c=LP.Character
+if c and ball then
+local hrp=c:FindFirstChild("HumanoidRootPart")
+if hrp and(ball.Position-hrp.Position).Magnitude<15 then
+local tool=c:FindFirstChildOfClass("Tool")
+if tool then tool:Activate()end
+end
+end
+end)
+end
+end
+end)
+
+-- BEDWARS AUTO BED
 spawn(function()
 while true do
 task.wait(0.3)
+if S.BedWarsAuto then
+pcall(function()
 local c=LP.Character
-local hrp=c and c:FindFirstChild("HumanoidRootPart")
-if S.AuraShape=="Sphere"and hrp then
-if not auraSphere or auraSphere.Parent~=hrp then
-if auraSphere then auraSphere:Destroy() end
-local a=Instance.new("Part",hrp)
-a.Name="AuraSphere"
-a.Shape=Enum.PartType.Ball
-a.Size=Vector3.new(S.AuraSize,S.AuraSize,S.AuraSize)
-a.Material=Enum.Material.ForceField
-a.CanCollide=false a.Massless=true a.CastShadow=false
-a.Transparency=0.7
-a.Color=C[S.AuraColor]or C.Purple
-a.CFrame=hrp.CFrame
-local w=Instance.new("WeldConstraint",a)
-w.Part0=a w.Part1=hrp
-auraSphere=a
+if not c then return end
+local hrp=c:FindFirstChild("HumanoidRootPart")
+if not hrp then return end
+for _,obj in pairs(workspace:GetDescendants())do
+if obj.Name:lower():find("bed")and obj:IsA("BasePart")then
+if(obj.Position-hrp.Position).Magnitude<8 then
+local tool=c:FindFirstChildOfClass("Tool")
+if tool then tool:Activate()end
 end
-if auraSphere then
-auraSphere.Color=C[S.AuraColor]or C.Purple
-auraSphere.Size=Vector3.new(S.AuraSize,S.AuraSize,S.AuraSize)
-auraSphere.CFrame=hrp.CFrame
 end
-else
-if auraSphere then auraSphere:Destroy() auraSphere=nil end
+end
+end)
 end
 end
 end)
 
--- HITBOX EXPANDER
+-- ARSENAL AUTO
+spawn(function()
+while true do
+task.wait(0.1)
+if S.ArsenalAuto then
+local c=LP.Character
+if c then
+local tool=c:FindFirstChildOfClass("Tool")
+if tool then
+local mouse=LP:GetMouse()
+if mouse.Target and mouse.Target.Parent~=c then
+local hum=mouse.Target.Parent:FindFirstChildOfClass("Humanoid")
+if hum and hum.Health>0 then pcall(function() tool:Activate()end)end
+end
+end
+end
+end
+end
+end)
+
+-- JAILBREAK AUTO ROB
+spawn(function()
+while true do
+task.wait(0.5)
+if S.JailbreakAuto then
+pcall(function()
+local c=LP.Character
+if not c then return end
+local hrp=c:FindFirstChild("HumanoidRootPart")
+if not hrp then return end
+for _,obj in pairs(workspace:GetDescendants())do
+if obj:IsA("BasePart")and(obj.Name:lower():find("cash")or obj.Name:lower():find("jewel"))then
+if(obj.Position-hrp.Position).Magnitude<100 then hrp.CFrame=CFrame.new(obj.Position+Vector3.new(0,3,0))end
+end
+end
+end)
+end
+end
+end)
+
+-- PET SIM AUTO COLLECT
+spawn(function()
+while true do
+task.wait(0.5)
+if S.PetSimAuto then
+pcall(function()
+local c=LP.Character
+if not c then return end
+local hrp=c:FindFirstChild("HumanoidRootPart")
+if not hrp then return end
+for _,obj in pairs(workspace:GetDescendants())do
+if obj:IsA("BasePart")and(obj.Name:lower():find("coin")or obj.Name:lower():find("egg"))then
+if(obj.Position-hrp.Position).Magnitude<150 then hrp.CFrame=CFrame.new(obj.Position+Vector3.new(0,5,0))end
+end
+end
+end)
+end
+end
+end)
+
+-- BLOX FRUITS
+spawn(function()
+while true do
+task.wait(1)
+if S.BloxFruitsAuto then
+pcall(function()
+local c=LP.Character
+if c then
+local tool=c:FindFirstChildOfClass("Tool")
+if tool then tool:Activate()end
+end
+end)
+end
+end
+end)
+
+-- HITBOX
 spawn(function()
 while true do
 task.wait(0.5)
@@ -617,11 +736,8 @@ local t=p.Character
 if t then
 local th=t:FindFirstChildOfClass("Humanoid")
 local thrp=t:FindFirstChild("HumanoidRootPart")
-if th and thrp and th.Health>0 then
-local d=(hrp.Position-thrp.Position).Magnitude
-if d<=S.KillAuraRange then
-pcall(function() if th.Health>0 then th.Health=th.Health-25 end end)
-end
+if th and thrp and th.Health>0 and(hrp.Position-thrp.Position).Magnitude<=S.KillAuraRange then
+pcall(function() th.Health=th.Health-25 end)
 end
 end
 end
@@ -631,7 +747,7 @@ end
 end
 end)
 
--- TELEPORT TO NEAREST
+-- TELEPORT
 spawn(function()
 while true do
 task.wait(0.3)
@@ -640,19 +756,18 @@ local c=LP.Character
 if c then
 local hrp=c:FindFirstChild("HumanoidRootPart")
 if hrp then
-local closest,dist=nil,99999
+local cl,ds=nil,99999
 for _,p in pairs(P:GetPlayers())do
 if p==LP then continue end
 local t=p.Character
 if t then
 local thrp=t:FindFirstChild("HumanoidRootPart")
-if thrp then
-local d=(hrp.Position-thrp.Position).Magnitude
-if d<dist then dist=d closest=thrp end
+if thrp and(hrp.Position-thrp.Position).Magnitude<ds then
+ds=(hrp.Position-thrp.Position).Magnitude cl=thrp
 end
 end
 end
-if closest then hrp.CFrame=CFrame.new(closest.Position+Vector3.new(0,3,0)) end
+if cl then hrp.CFrame=CFrame.new(cl.Position+Vector3.new(0,3,0))end
 end
 end
 end
@@ -665,20 +780,17 @@ R.Stepped:Connect(function()
 if not S.AutoDodge then return end
 if tick()-lastDodge<0.5 then return end
 local c=LP.Character if not c then return end
-local hrp=c:FindFirstChild("HumanoidRootPart") if not hrp then return end
+local hrp=c:FindFirstChild("HumanoidRootPart")if not hrp then return end
 for _,p in pairs(P:GetPlayers())do
 if p==LP then continue end
 local t=p.Character
 if t then
 local thrp=t:FindFirstChild("HumanoidRootPart")
-if thrp then
-local d=(hrp.Position-thrp.Position).Magnitude
-if d<S.AutoDodgeRange then
+if thrp and(hrp.Position-thrp.Position).Magnitude<S.AutoDodgeRange then
 local dir=(hrp.Position-thrp.Position).Unit
 hrp.CFrame=hrp.CFrame+dir*8
 lastDodge=tick()
 return
-end
 end
 end
 end
@@ -694,25 +806,22 @@ local hrp=c and c:FindFirstChild("HumanoidRootPart")
 if S.Trail and hrp then
 if not trailAttach or trailAttach.Parent~=hrp then
 if trailAttach then trailAttach:Destroy() end
-local a0=Instance.new("Attachment",hrp) a0.Position=Vector3.new(0,1,0)
-local a1=Instance.new("Attachment",hrp) a1.Position=Vector3.new(0,-1,0)
+local a0=Instance.new("Attachment",hrp)a0.Position=Vector3.new(0,1,0)
+local a1=Instance.new("Attachment",hrp)a1.Position=Vector3.new(0,-1,0)
 local tr=Instance.new("Trail",hrp)
 tr.Attachment0=a0 tr.Attachment1=a1
 tr.Lifetime=0.5
-tr.Color=ColorSequence.new(Color3.fromRGB(200,100,255))
+tr.Color=ColorSequence.new(T1.accent)
 tr.LightEmission=1
 trailAttach=tr
 end
-else
-if trailAttach then trailAttach:Destroy() trailAttach=nil end
-end
+elseif trailAttach then trailAttach:Destroy()trailAttach=nil end
 end
 end)
 
 -- AIM ASSIST
 R:BindToRenderStep("AimAssist",Enum.RenderPriority.Camera.Value+5,function()
-if not S.AimAssist then return end
-if not S.Aim then return end
+if not S.AimAssist or not S.Aim then return end
 local c=LP.Character if not c then return end
 local closest,sd=nil,S.AimAssistFOV
 local vp=Cam.ViewportSize
@@ -755,7 +864,7 @@ if not on then continue end
 local d=(Vector2.new(sp.X,sp.Y)-cen).Magnitude
 if d<10 then
 local tool=c:FindFirstChildOfClass("Tool")
-if tool then pcall(function() tool:Activate()end) lastTrigger=tick() return end
+if tool then pcall(function() tool:Activate()end)lastTrigger=tick()return end
 end
 end
 end)
@@ -774,16 +883,13 @@ if p==LP then continue end
 local t=p.Character
 if t then
 local thrp=t:FindFirstChild("HumanoidRootPart")
-if thrp then
-local d=(hrp.Position-thrp.Position).Magnitude
-if d<=S.AutoParryRange then
+if thrp and(hrp.Position-thrp.Position).Magnitude<=S.AutoParryRange then
 pcall(function()
 if U:IsKeyDown(Enum.KeyCode[S.AutoParryKey])then
 local tool=c:FindFirstChildOfClass("Tool")
 if tool then tool:Activate()end
 end
 end)
-end
 end
 end
 end
@@ -809,11 +915,9 @@ if hrp then
 local sp=Cam:WorldToViewportPoint(hrp.Position+Vector3.new(0,3,0))
 if sp.Z>0 then
 local txt=Drawing.new("Text")
-txt.Text="- "..math.floor(dmg)
-txt.Size=18 txt.Center=true txt.Outline=true
+txt.Text="- "..math.floor(dmg)txt.Size=18 txt.Center=true txt.Outline=true
 txt.Color=Color3.fromRGB(255,80,80)
-txt.Position=Vector2.new(sp.X,sp.Y)
-txt.Visible=true
+txt.Position=Vector2.new(sp.X,sp.Y)txt.Visible=true
 table.insert(dmgDrawings,{txt=txt,pos=Vector2.new(sp.X,sp.Y),life=1})
 end
 end
@@ -822,9 +926,7 @@ if S.HitMarker then
 local cx,cy=Cam.ViewportSize.X/2,Cam.ViewportSize.Y/2
 for i=1,4 do
 local line=Drawing.new("Line")
-line.Thickness=2
-line.Color=Color3.fromRGB(255,255,255)
-line.Visible=true
+line.Thickness=2 line.Color=Color3.fromRGB(255,255,255)line.Visible=true
 table.insert(hitMarkerDrawings,{line=line,cx=cx,cy=cy,life=0.5,dir=i})
 end
 end
@@ -844,7 +946,6 @@ if h then watchDamage(p,h)end
 end
 end
 end)
-
 R.RenderStepped:Connect(function()
 for i=#dmgDrawings,1,-1 do
 local d=dmgDrawings[i]
@@ -879,15 +980,11 @@ f.BorderSizePixel=0
 f.ZIndex=80
 Instance.new("UICorner",f).CornerRadius=UDim.new(0,6)
 local l=Instance.new("TextLabel",f)
-l.Size=UDim2.new(1,-16,1,0)
-l.Position=UDim2.new(0,8,0,0)
-l.BackgroundTransparency=1
-l.Text=text
+l.Size=UDim2.new(1,-16,1,0)l.Position=UDim2.new(0,8,0,0)
+l.BackgroundTransparency=1 l.Text=text
 l.TextColor3=Color3.fromRGB(255,255,255)
-l.TextSize=13
-l.Font=Enum.Font.GothamMedium
-l.TextXAlignment=Enum.TextXAlignment.Left
-l.ZIndex=81
+l.TextSize=13 l.Font=Enum.Font.GothamMedium
+l.TextXAlignment=Enum.TextXAlignment.Left l.ZIndex=81
 kfY=kfY+36
 task.delay(4,function()
 f:TweenPosition(UDim2.new(1,-290,0.3,kfY-40),"In","Quad",0.3,true)
@@ -896,7 +993,6 @@ f:Destroy()
 kfY=kfY-36
 end)
 end
-
 local watchedKF={}
 local function watchKill(p,h)
 if not h or watchedKF[h]then return end
@@ -905,7 +1001,7 @@ local pname=p.Name
 h.Died:Connect(function()
 if S.KillFeed then
 if p==LP then killFeed("💀 Ты умер")
-else killFeed("☠ "..pname.." died") end
+else killFeed("☠ "..pname.." died")end
 end
 end)
 h.Destroying:Connect(function() watchedKF[h]=nil end)
@@ -936,11 +1032,8 @@ if S.HatType=="China"then
 local layers={{y=1.5,s=4.5},{y=1.9,s=3.8},{y=2.3,s=3.1},{y=2.7,s=2.4},{y=3.1,s=1.7},{y=3.5,s=1.0},{y=3.9,s=.4}}
 for i,l in ipairs(layers)do
 local p=Instance.new("Part",hd)
-p.Name="NCH_Layer"
-p.Shape=Enum.PartType.Cylinder
-p.Size=Vector3.new(.25,l.s,l.s)
-p.Material=Enum.Material.Neon
-p.CanCollide=false p.Massless=true p.CastShadow=false
+p.Name="NCH_Layer"p.Shape=Enum.PartType.Cylinder p.Size=Vector3.new(.25,l.s,l.s)
+p.Material=Enum.Material.Neon p.CanCollide=false p.Massless=true p.CastShadow=false
 p.CFrame=hd.CFrame*CFrame.new(0,l.y,0)*CFrame.Angles(0,0,math.rad(90))
 local w=Instance.new("WeldConstraint",p)w.Part0=p w.Part1=hd
 if i==1 then local li=Instance.new("PointLight",p)li.Brightness=3 li.Range=15 li.Shadows=false end
@@ -963,8 +1056,7 @@ local w2=Instance.new("WeldConstraint",cap)w2.Part0=cap w2.Part1=hd
 elseif S.HatType=="Crown"then
 for i=-1,1 do
 local spike=Instance.new("Part",hd)
-spike.Name="HatCustom"
-spike.Shape=Enum.PartType.Cylinder
+spike.Name="HatCustom"spike.Shape=Enum.PartType.Cylinder
 spike.Size=Vector3.new(.2,.5,.5)
 spike.Material=Enum.Material.Neon spike.Color=Color3.fromRGB(255,215,0)
 spike.CanCollide=false spike.Massless=true
@@ -994,6 +1086,38 @@ p.Color=Color3.fromHSV((tick()*.15)%1,1,1)
 end
 end
 task.wait(0.05)
+end
+end)
+
+-- AURA SPHERE
+local auraSphere=nil
+spawn(function()
+while true do
+task.wait(0.3)
+local c=LP.Character
+local hrp=c and c:FindFirstChild("HumanoidRootPart")
+if hrp then
+if not auraSphere or auraSphere.Parent~=hrp then
+if auraSphere then auraSphere:Destroy() end
+local a=Instance.new("Part",hrp)
+a.Name="AuraSphere"a.Shape=Enum.PartType.Ball
+a.Size=Vector3.new(S.AuraSize,S.AuraSize,S.AuraSize)
+a.Material=Enum.Material.ForceField
+a.CanCollide=false a.Massless=true a.CastShadow=false
+a.Transparency=0.7
+a.Color=C[S.AuraColor]or C.Purple
+a.CFrame=hrp.CFrame
+local w=Instance.new("WeldConstraint",a)w.Part0=a w.Part1=hrp
+auraSphere=a
+end
+if auraSphere then
+auraSphere.Color=C[S.AuraColor]or C.Purple
+auraSphere.Size=Vector3.new(S.AuraSize,S.AuraSize,S.AuraSize)
+auraSphere.CFrame=hrp.CFrame
+end
+else
+if auraSphere then auraSphere:Destroy()auraSphere=nil end
+end
 end
 end)
 
@@ -1258,7 +1382,7 @@ if S.Smooth>0 then Cam.CFrame=Cam.CFrame:Lerp(cf,1-S.Smooth)else Cam.CFrame=cf e
 if S.AutoS then local tl=LP.Character and LP.Character:FindFirstChildOfClass("Tool")if tl then pcall(function()tl:Activate()end)end end
 end)
 
--- CS:GO TARGET ESP
+-- TARGET ESP
 local tBox=Drawing.new("Square")tBox.Thickness=1.5 tBox.Filled=false tBox.Visible=false
 local tCorners={}
 for i=1,8 do tCorners[i]=Drawing.new("Line")tCorners[i].Thickness=2 tCorners[i].Visible=false end
@@ -1457,4 +1581,4 @@ if HD[p]then HD[p]:Remove()end if AR[p]then AR[p]:Remove()end if BM[p]then BM[p]
 if SK[p]then for _,l in pairs(SK[p])do l:Remove()end end
 if CH[p]then for _,cc in pairs(CH[p])do cc:Destroy()end end
 end)
-print("[v14 PrimDLC] @LutshiyKot loaded!")
+print("[v15 PrimDLC] @LutshiyKot loaded!")
