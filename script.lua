@@ -8,12 +8,15 @@ local Cam=workspace.CurrentCamera
 workspace:GetPropertyChangedSignal("CurrentCamera"):Connect(function()Cam=workspace.CurrentCamera end)
 LP.CharacterAdded:Connect(function(c)c:WaitForChild("HumanoidRootPart")task.wait(.5)Cam=workspace.CurrentCamera end)
 
+pcall(function() S1.RespectFilteringEnabled=false end)
+
 local S={
 Aim=true,Smooth=.05,FOV=120,Part="Head",MaxD=500,VisChk=true,AutoS=false,Pred=false,
 TgtE=true,TgtStyle="Box",TgtCol="Red",TgtPulse=false,TgtName=true,TgtHP=true,TgtDist=true,TgtArrow=false,TgtLock=false,TgtTrail=false,
 ESP=true,Box=true,BoxStyle="Normal",HL=true,Name=true,Dist=true,HP=true,Tracer=false,Skel=false,HDot=false,Arr=false,Chams=false,Beam=false,
 FB=false,NF=false,ShowFov=true,ShowCross=true,CrossSty="Dot",WM=true,FovCol="Purple",
 HSnd=false,HSndT="Click",KSnd=false,KSndT="Explosion",KEff=false,KEffT="Explosion",Aura=false,AuraT="Fire",AuraR=40,
+SpinBot=false,SpinBotSpeed=10,ThirdPerson=false,ThirdPersonDist=10,
 Hat=true,Rainbow=false,CamFOVe=false,CamFOV=70,
 Snow=false,SnowT="Normal",Sky=false,SkyT="Night",Time=false,TimeV=14,Bloom=false,BloomI=1.5,CC=false,CCM="None",SunR=false,Atm=false,
 Spd=16,Jmp=50,IJmp=false,Fly=false,Noclip=false,FlyS=50,AAFK=false,AutoR=false,FPS=true,Ping=true,Clock=false,
@@ -43,88 +46,69 @@ ntx.Font=Enum.Font.GothamBold ntx.ZIndex=101
 nt:TweenPosition(UDim2.new(.5,-160,0,30),"Out","Quad",.5,true)
 task.delay(4,function()nt:Destroy() end)
 
--- ВАТЕРМАРК NIGHTDLC STYLE
+-- БОЛЬШОЙ ВАТЕРМАРК (левый верх)
 local wmFrame=Instance.new("Frame",gui)
-wmFrame.Size=UDim2.new(0,340,0,32)
-wmFrame.Position=UDim2.new(0.5,-170,0,10)
+wmFrame.Size=UDim2.new(0,420,0,46)
+wmFrame.Position=UDim2.new(0,15,0,15)
 wmFrame.BackgroundColor3=Color3.fromRGB(18,18,26)
 wmFrame.BackgroundTransparency=0.1
 wmFrame.BorderSizePixel=0
 wmFrame.ZIndex=70
-Instance.new("UICorner",wmFrame).CornerRadius=UDim.new(0,8)
+Instance.new("UICorner",wmFrame).CornerRadius=UDim.new(0,10)
 local wmStroke=Instance.new("UIStroke",wmFrame)
-wmStroke.Color=Color3.fromRGB(60,60,80)
-wmStroke.Thickness=1
-wmStroke.Transparency=0.4
+wmStroke.Color=Color3.fromRGB(80,80,110)
+wmStroke.Thickness=1.5
+wmStroke.Transparency=0.2
 
 local wmMoon=Instance.new("TextLabel",wmFrame)
-wmMoon.Size=UDim2.new(0,20,1,0)wmMoon.Position=UDim2.new(0,12,0,0)
-wmMoon.BackgroundTransparency=1 wmMoon.Text="🌙" wmMoon.TextSize=16
-wmMoon.Font=Enum.Font.GothamBold wmMoon.TextColor3=Color3.fromRGB(220,220,240)
+wmMoon.Size=UDim2.new(0,30,1,0)wmMoon.Position=UDim2.new(0,18,0,0)
+wmMoon.BackgroundTransparency=1 wmMoon.Text="🌙" wmMoon.TextSize=24
+wmMoon.Font=Enum.Font.GothamBold wmMoon.TextColor3=Color3.fromRGB(230,230,250)
 wmMoon.TextXAlignment=Enum.TextXAlignment.Left wmMoon.ZIndex=71
 
 local wmName=Instance.new("TextLabel",wmFrame)
-wmName.Size=UDim2.new(0,90,1,0)wmName.Position=UDim2.new(0,36,0,0)
-wmName.BackgroundTransparency=1 wmName.Text="PrimDLC" wmName.TextSize=14
-wmName.Font=Enum.Font.GothamBold wmName.TextColor3=Color3.fromRGB(230,230,245)
+wmName.Size=UDim2.new(0,120,1,0)wmName.Position=UDim2.new(0,52,0,0)
+wmName.BackgroundTransparency=1 wmName.Text="PrimDLC" wmName.TextSize=20
+wmName.Font=Enum.Font.GothamBold wmName.TextColor3=Color3.fromRGB(240,240,255)
 wmName.TextXAlignment=Enum.TextXAlignment.Left wmName.ZIndex=71
 
 local d1=Instance.new("Frame",wmFrame)
-d1.Size=UDim2.new(0,1,0,16)d1.Position=UDim2.new(0,130,0.5,-8)
-d1.BackgroundColor3=Color3.fromRGB(60,60,80)d1.BorderSizePixel=0 d1.ZIndex=71
+d1.Size=UDim2.new(0,1,0,26)d1.Position=UDim2.new(0,178,0.5,-13)
+d1.BackgroundColor3=Color3.fromRGB(80,80,110)d1.BorderSizePixel=0 d1.ZIndex=71
 
 local fpsIco=Instance.new("Frame",wmFrame)
-fpsIco.Size=UDim2.new(0,18,0,18)fpsIco.Position=UDim2.new(0,140,0.5,-9)
-fpsIco.BackgroundColor3=Color3.fromRGB(90,80,130)fpsIco.BorderSizePixel=0 fpsIco.ZIndex=71
-Instance.new("UICorner",fpsIco).CornerRadius=UDim.new(0,4)
+fpsIco.Size=UDim2.new(0,26,0,26)fpsIco.Position=UDim2.new(0,192,0.5,-13)
+fpsIco.BackgroundColor3=Color3.fromRGB(110,95,160)fpsIco.BorderSizePixel=0 fpsIco.ZIndex=71
+Instance.new("UICorner",fpsIco).CornerRadius=UDim.new(0,6)
 local fpsIcoTxt=Instance.new("TextLabel",fpsIco)
 fpsIcoTxt.Size=UDim2.new(1,0,1,0)fpsIcoTxt.BackgroundTransparency=1
-fpsIcoTxt.Text="∿"fpsIcoTxt.TextSize=14
-fpsIcoTxt.Font=Enum.Font.GothamBold fpsIcoTxt.TextColor3=Color3.fromRGB(220,220,255)fpsIcoTxt.ZIndex=72
+fpsIcoTxt.Text="∿"fpsIcoTxt.TextSize=18
+fpsIcoTxt.Font=Enum.Font.GothamBold fpsIcoTxt.TextColor3=Color3.fromRGB(230,230,255)fpsIcoTxt.ZIndex=72
 
 local fpsTxt=Instance.new("TextLabel",wmFrame)
-fpsTxt.Size=UDim2.new(0,55,1,0)fpsTxt.Position=UDim2.new(0,162,0,0)
-fpsTxt.BackgroundTransparency=1 fpsTxt.Text="60 fps" fpsTxt.TextSize=14
-fpsTxt.Font=Enum.Font.GothamBold fpsTxt.TextColor3=Color3.fromRGB(230,230,245)
+fpsTxt.Size=UDim2.new(0,65,1,0)fpsTxt.Position=UDim2.new(0,224,0,0)
+fpsTxt.BackgroundTransparency=1 fpsTxt.Text="60 fps" fpsTxt.TextSize=18
+fpsTxt.Font=Enum.Font.GothamBold fpsTxt.TextColor3=Color3.fromRGB(240,240,250)
 fpsTxt.TextXAlignment=Enum.TextXAlignment.Left fpsTxt.ZIndex=71
 
 local d2=Instance.new("Frame",wmFrame)
-d2.Size=UDim2.new(0,1,0,16)d2.Position=UDim2.new(0,222,0.5,-8)
-d2.BackgroundColor3=Color3.fromRGB(60,60,80)d2.BorderSizePixel=0 d2.ZIndex=71
+d2.Size=UDim2.new(0,1,0,26)d2.Position=UDim2.new(0,294,0.5,-13)
+d2.BackgroundColor3=Color3.fromRGB(80,80,110)d2.BorderSizePixel=0 d2.ZIndex=71
 
 local pingIco=Instance.new("Frame",wmFrame)
-pingIco.Size=UDim2.new(0,18,0,18)pingIco.Position=UDim2.new(0,232,0.5,-9)
-pingIco.BackgroundColor3=Color3.fromRGB(90,80,130)pingIco.BorderSizePixel=0 pingIco.ZIndex=71
-Instance.new("UICorner",pingIco).CornerRadius=UDim.new(0,4)
+pingIco.Size=UDim2.new(0,26,0,26)pingIco.Position=UDim2.new(0,308,0.5,-13)
+pingIco.BackgroundColor3=Color3.fromRGB(110,95,160)pingIco.BorderSizePixel=0 pingIco.ZIndex=71
+Instance.new("UICorner",pingIco).CornerRadius=UDim.new(0,6)
 local pingIcoTxt=Instance.new("TextLabel",pingIco)
 pingIcoTxt.Size=UDim2.new(1,0,1,0)pingIcoTxt.BackgroundTransparency=1
-pingIcoTxt.Text="●"pingIcoTxt.TextSize=10
-pingIcoTxt.Font=Enum.Font.GothamBold pingIcoTxt.TextColor3=Color3.fromRGB(220,220,255)pingIcoTxt.ZIndex=72
+pingIcoTxt.Text="●"pingIcoTxt.TextSize=14
+pingIcoTxt.Font=Enum.Font.GothamBold pingIcoTxt.TextColor3=Color3.fromRGB(230,230,255)pingIcoTxt.ZIndex=72
 
 local pingTxt=Instance.new("TextLabel",wmFrame)
-pingTxt.Size=UDim2.new(0,55,1,0)pingTxt.Position=UDim2.new(0,254,0,0)
-pingTxt.BackgroundTransparency=1 pingTxt.Text="0 ms" pingTxt.TextSize=14
-pingTxt.Font=Enum.Font.GothamBold pingTxt.TextColor3=Color3.fromRGB(230,230,245)
+pingTxt.Size=UDim2.new(0,70,1,0)pingTxt.Position=UDim2.new(0,340,0,0)
+pingTxt.BackgroundTransparency=1 pingTxt.Text="0 ms" pingTxt.TextSize=18
+pingTxt.Font=Enum.Font.GothamBold pingTxt.TextColor3=Color3.fromRGB(240,240,250)
 pingTxt.TextXAlignment=Enum.TextXAlignment.Left pingTxt.ZIndex=71
-
-local d3=Instance.new("Frame",wmFrame)
-d3.Size=UDim2.new(0,1,0,16)d3.Position=UDim2.new(1,-70,0.5,-8)
-d3.BackgroundColor3=Color3.fromRGB(60,60,80)d3.BorderSizePixel=0 d3.ZIndex=71
-
-local tpsIco=Instance.new("Frame",wmFrame)
-tpsIco.Size=UDim2.new(0,18,0,18)tpsIco.Position=UDim2.new(1,-60,0.5,-9)
-tpsIco.BackgroundColor3=Color3.fromRGB(90,80,130)tpsIco.BorderSizePixel=0 tpsIco.ZIndex=71
-Instance.new("UICorner",tpsIco).CornerRadius=UDim.new(0,4)
-local tpsIcoTxt=Instance.new("TextLabel",tpsIco)
-tpsIcoTxt.Size=UDim2.new(1,0,1,0)tpsIcoTxt.BackgroundTransparency=1
-tpsIcoTxt.Text="▤"tpsIcoTxt.TextSize=12
-tpsIcoTxt.Font=Enum.Font.GothamBold tpsIcoTxt.TextColor3=Color3.fromRGB(220,220,255)tpsIcoTxt.ZIndex=72
-
-local tpsTxt=Instance.new("TextLabel",wmFrame)
-tpsTxt.Size=UDim2.new(0,50,1,0)tpsTxt.Position=UDim2.new(1,-38,0,0)
-tpsTxt.BackgroundTransparency=1 tpsTxt.Text="60.0 tps" tpsTxt.TextSize=14
-tpsTxt.Font=Enum.Font.GothamBold tpsTxt.TextColor3=Color3.fromRGB(230,230,245)
-tpsTxt.TextXAlignment=Enum.TextXAlignment.Left tpsTxt.ZIndex=71
 
 local GL={}
 for i=1,5 do
@@ -359,10 +343,15 @@ end
 -- SOUNDS
 local HSnd={Click="rbxassetid://6895079853",Bell="rbxassetid://6042054027",Minecraft="rbxassetid://6042054196",Pew="rbxassetid://6042054652",Bubble="rbxassetid://6042054764"}
 local KSnd={Explosion="rbxassetid://153467001",Ding="rbxassetid://4590662766",Bruh="rbxassetid://6042055494",Vine="rbxassetid://6042055656",Sniper="rbxassetid://6042055794"}
+local soundHolder=Instance.new("Folder",gui)
+soundHolder.Name="SoundHolder"
+
 local function pSnd(id,v)
 if not id or id=="" then return end
 local s=Instance.new("Sound")
-s.SoundId=id s.Volume=v or 1 s.Parent=S1
+s.SoundId=id
+s.Volume=v or 1
+s.Parent=soundHolder
 pcall(function() s:Play() end)
 D:AddItem(s,5)
 end
@@ -440,9 +429,15 @@ S.FB=v
 if v then L.Brightness=3 L.ClockTime=14 L.FogEnd=100000 L.GlobalShadows=false else L.Brightness=1 L.GlobalShadows=true end
 end)
 mkC("No Fog",S.NF,function(v)S.NF=v L.FogEnd=v and 100000 or 1000 end)
-mkSec("Fun")mkC("Neon China Hat",S.Hat,function(v)S.Hat=v end)mkC("Rainbow Player",S.Rainbow,function(v)S.Rainbow=v end)
-mkSec("Camera")mkC("Custom FOV",S.CamFOVe,function(v)S.CamFOVe=v Cam.FieldOfView=v and S.CamFOV or 70 end)
+mkSec("Anti-Bot")
+mkC("Spin Bot",S.SpinBot,function(v)S.SpinBot=v end)
+mkSl("Spin Speed",5,30,S.SpinBotSpeed,function(v)S.SpinBotSpeed=v end)
+mkSec("Camera")
+mkC("Third Person",S.ThirdPerson,function(v)S.ThirdPerson=v end)
+mkSl("TP Distance",5,20,S.ThirdPersonDist,function(v)S.ThirdPersonDist=v end)
+mkC("Custom FOV",S.CamFOVe,function(v)S.CamFOVe=v Cam.FieldOfView=v and S.CamFOV or 70 end)
 mkSl("Camera FOV",30,120,S.CamFOV,function(v)S.CamFOV=v if S.CamFOVe then Cam.FieldOfView=v end end)
+mkSec("Fun")mkC("Neon China Hat",S.Hat,function(v)S.Hat=v end)mkC("Rainbow Player",S.Rainbow,function(v)S.Rainbow=v end)
 mkSec("Movement")mkC("Infinite Jump",S.IJmp,function(v)S.IJmp=v end)
 mkC("Fly",S.Fly,function(v)
 S.Fly=v local c=LP.Character if not c then return end
@@ -510,16 +505,9 @@ end)
 local fr2,lt2=0,tick()
 local curFps2=60
 local curPing2=0
-local curTps=60
 R.RenderStepped:Connect(function()
 fr2=fr2+1
 if tick()-lt2>=0.5 then curFps2=math.floor(fr2/(tick()-lt2))fr2=0 lt2=tick()end
-end)
-local hbCount=0
-local hbTime=tick()
-R.Heartbeat:Connect(function()
-hbCount=hbCount+1
-if tick()-hbTime>=1 then curTps=math.floor(hbCount/(tick()-hbTime)*10)/10 hbCount=0 hbTime=tick()end
 end)
 spawn(function()
 while true do
@@ -539,7 +527,28 @@ local pc=Color3.fromRGB(230,230,245)
 if curPing2>100 then pc=Color3.fromRGB(255,100,100)
 elseif curPing2>60 then pc=Color3.fromRGB(255,220,100) end
 pingTxt.TextColor3=pc
-tpsTxt.Text=string.format("%.1f tps",curTps)
+end)
+
+-- SPIN BOT + THIRD PERSON
+local spinAngle=0
+R:BindToRenderStep("SpinAndTP",Enum.RenderPriority.Camera.Value+3,function()
+local c=LP.Character
+if c then
+local hd=c:FindFirstChild("Head")
+if hd then
+if S.ThirdPerson then
+local targetPos=hd.Position
+local lookDir=Cam.CFrame.LookVector
+local camPos=targetPos-lookDir*S.ThirdPersonDist+Vector3.new(0,1.5,0)
+Cam.CFrame=CFrame.new(camPos,targetPos)
+end
+if S.SpinBot then
+spinAngle=spinAngle+math.rad(S.SpinBotSpeed)
+local offset=Vector3.new(math.cos(spinAngle)*10,3,math.sin(spinAngle)*10)
+Cam.CFrame=CFrame.new(hd.Position+offset,hd.Position)
+end
+end
+end
 end)
 
 -- ULTRA CHINA HAT
@@ -1042,4 +1051,4 @@ if HD[p]then HD[p]:Remove()end if AR[p]then AR[p]:Remove()end if BM[p]then BM[p]
 if SK[p]then for _,l in pairs(SK[p])do l:Remove()end end
 if CH[p]then for _,cc in pairs(CH[p])do cc:Destroy()end end
 end)
-print("[v8 PrimDLC] @LutshiyKot loaded!")
+print("[v9 PrimDLC] @LutshiyKot loaded!")
