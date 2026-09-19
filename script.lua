@@ -32,6 +32,8 @@ AutoParry=false,AutoParryRange=8,AutoParryKey="F",
 Theme="Purple",
 EmoteSpam=false,ChatSpam=false,
 AutoRejoin=false,
+BladeBallParry=false,BedWarsAuto=false,ArsenalAuto=false,JailbreakAuto=false,PetSimAuto=false,BloxFruitsAuto=false,
+AutoHide=false,
 }
 local C={Purple=Color3.fromRGB(180,100,255),Red=Color3.fromRGB(255,80,80),Blue=Color3.fromRGB(80,150,255),
 Green=Color3.fromRGB(80,255,120),Yellow=Color3.fromRGB(255,220,80),White=Color3.fromRGB(255,255,255),
@@ -86,7 +88,7 @@ wmMoon.Font=Enum.Font.GothamBold wmMoon.TextColor3=T1.text
 wmMoon.TextXAlignment=Enum.TextXAlignment.Left wmMoon.ZIndex=71
 local wmName=Instance.new("TextLabel",wmFrame)
 wmName.Size=UDim2.new(0,80,1,0)wmName.Position=UDim2.new(0,32,0,0)
-wmName.BackgroundTransparency=1 wmName.Text="PrimDLC v15" wmName.TextSize=14
+wmName.BackgroundTransparency=1 wmName.Text="PrimDLC v16.1" wmName.TextSize=14
 wmName.Font=Enum.Font.GothamBold wmName.TextColor3=T1.text
 wmName.TextXAlignment=Enum.TextXAlignment.Left wmName.ZIndex=71
 local d1=Instance.new("Frame",wmFrame)
@@ -624,7 +626,7 @@ pcall(function()
 local chat=game:GetService("ReplicatedStorage"):FindFirstChild("DefaultChatSystemChatEvents")
 if chat then
 local say=chat:FindFirstChild("SayMessageRequest")
-if say then say:FireServer("PrimDLC v15","All")end
+if say then say:FireServer("PrimDLC v16.1","All")end
 end
 end)
 end
@@ -834,26 +836,39 @@ end
 end
 end)
 
--- AUTO DODGE
+-- AUTO DODGE (fixed - плавный + проверка стен)
 local lastDodge=0
-R.Stepped:Connect(function()
+R.Heartbeat:Connect(function()
 if not S.AutoDodge then return end
-if tick()-lastDodge<0.5 then return end
+if tick()-lastDodge<0.25 then return end
 local c=LP.Character if not c then return end
 local hrp=c:FindFirstChild("HumanoidRootPart")if not hrp then return end
+local hum=c:FindFirstChildOfClass("Humanoid")if not hum or hum.Health<=0 then return end
+local nearest,nd=nil,math.huge
 for _,p in pairs(P:GetPlayers())do
 if p==LP then continue end
 local t=p.Character
-if t then
+if not t then continue end
 local thrp=t:FindFirstChild("HumanoidRootPart")
-if thrp and(hrp.Position-thrp.Position).Magnitude<S.AutoDodgeRange then
-local dir=(hrp.Position-thrp.Position).Unit
-hrp.CFrame=hrp.CFrame+dir*8
+local th=t:FindFirstChildOfClass("Humanoid")
+if thrp and th and th.Health>0 then
+local d=(hrp.Position-thrp.Position).Magnitude
+if d<S.AutoDodgeRange and d<nd then nd=d nearest=thrp end
+end
+end
+if not nearest then return end
+local dir=(hrp.Position-nearest.Position)
+dir=Vector3.new(dir.X,0,dir.Z)
+if dir.Magnitude<0.1 then dir=Vector3.new(1,0,0) end
+dir=dir.Unit
+local rp=RaycastParams.new()
+rp.FilterDescendantsInstances={c}
+rp.FilterType=Enum.RaycastFilterType.Exclude
+local check=workspace:Raycast(hrp.Position,dir*10,rp)
+if check then return end
+local newPos=hrp.Position+dir*7
+hrp.CFrame=CFrame.new(newPos,newPos+dir)
 lastDodge=tick()
-return
-end
-end
-end
 end)
 
 -- TRAIL
@@ -1173,7 +1188,6 @@ end
 if auraSphere then
 auraSphere.Color=C[S.AuraColor]or C.Purple
 auraSphere.Size=Vector3.new(S.AuraSize,S.AuraSize,S.AuraSize)
-auraSphere.CFrame=hrp.CFrame
 end
 else
 if auraSphere then auraSphere:Destroy()auraSphere=nil end
@@ -1247,18 +1261,36 @@ if S.Time then L.ClockTime=S.TimeV end
 end
 end)
 
--- HIT SOUND
+-- HIT SOUND + KILL SOUND (FIXED)
 local watchedHum={}
 local function watchHumanoid(p,h)
 if p==LP or not h or watchedHum[h] then return end
 watchedHum[h]=true
 local last=h.Health
 h.HealthChanged:Connect(function(newHP)
-if newHP<last and newHP>0 and S.HSnd then
-local damage=last-newHP
-if damage>0 then pSnd(HSnd[S.HSndT],.5) end
+if newHP<last and newHP>0 then
+local c=LP.Character
+if c and S.HSnd then
+local myHrp=c:FindFirstChild("HumanoidRootPart")
+local tHrp=h.Parent and h.Parent:FindFirstChild("HumanoidRootPart")
+if myHrp and tHrp then
+local dist=(myHrp.Position-tHrp.Position).Magnitude
+if dist<=250 then pSnd(HSnd[S.HSndT],.5) end
+end
+end
 end
 last=newHP
+end)
+h.Died:Connect(function()
+if not S.KSnd then return end
+local c=LP.Character
+if not c then return end
+local myHrp=c:FindFirstChild("HumanoidRootPart")
+local tHrp=h.Parent and h.Parent:FindFirstChild("HumanoidRootPart")
+if not myHrp or not tHrp then return end
+if (myHrp.Position-tHrp.Position).Magnitude<=300 then
+pSnd(KSnd[S.KSndT],.7)
+end
 end)
 h.Destroying:Connect(function() watchedHum[h]=nil end)
 end
@@ -1268,9 +1300,6 @@ local function setup(c)
 local h=c:WaitForChild("Humanoid",5)
 if not h then return end
 watchHumanoid(p,h)
-h.Died:Connect(function()
-if S.KSnd then pSnd(KSnd[S.KSndT],.7) end
-end)
 end
 if p.Character then task.spawn(setup,p.Character) end
 p.CharacterAdded:Connect(setup)
@@ -1557,8 +1586,7 @@ elseif AR[p]then AR[p].Visible=false end
 elseif AR[p]then AR[p].Visible=false end
 if S.Beam then
 if not BM[p]then BM[p]=Drawing.new("Line")BM[p].Thickness=1.5 BM[p].Color=Color3.fromRGB(255,100,200)BM[p].Transparency=.7 end
-local vp=Cam.ViewportSize
-local tS=Cam:WorldToViewportPoint(hrp.Position)
+local vp=Cam.ViewportSizelocal tS=Cam:WorldToViewportPoint(hrp.Position)
 BM[p].From=Vector2.new(vp.X/2,vp.Y-30)BM[p].To=Vector2.new(tS.X,tS.Y)BM[p].Visible=true
 elseif BM[p]then BM[p].Visible=false end
 if o1 and o2 then
@@ -1617,7 +1645,7 @@ HPB[p]=Drawing.new("Square")HPB[p].Thickness=1 HPB[p].Filled=true
 end
 local hp=hum.Health/hum.MaxHealth
 HPG[p].Size=Vector2.new(3,h)HPG[p].Position=Vector2.new(bx-6,tp.Y)HPG[p].Visible=true
-HPB[p].Size=Vector2.new(3,h*hp)HPB[p].Position=Vector2.new(bx-6,tp.Y+h*(1-hp))
+HPB[p].Size=Vector3.new(3,h*hp)HPB[p].Position=Vector2.new(bx-6,tp.Y+h*(1-hp))
 HPB[p].Color=Color3.fromRGB(math.floor(255*(1-hp)),math.floor(255*hp),60)HPB[p].Visible=true
 else
 if HPB[p]then HPB[p].Visible=false end
@@ -1641,4 +1669,4 @@ if HD[p]then HD[p]:Remove()end if AR[p]then AR[p]:Remove()end if BM[p]then BM[p]
 if SK[p]then for _,l in pairs(SK[p])do l:Remove()end end
 if CH[p]then for _,cc in pairs(CH[p])do cc:Destroy()end end
 end)
-print("[v15.1 PrimDLC] @LutshiyKot loaded!")
+print("[v16.1 PrimDLC] @LutshiyKot loaded!")
