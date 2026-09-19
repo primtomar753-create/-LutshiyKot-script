@@ -88,7 +88,7 @@ wmMoon.Font=Enum.Font.GothamBold wmMoon.TextColor3=T1.text
 wmMoon.TextXAlignment=Enum.TextXAlignment.Left wmMoon.ZIndex=71
 local wmName=Instance.new("TextLabel",wmFrame)
 wmName.Size=UDim2.new(0,80,1,0)wmName.Position=UDim2.new(0,32,0,0)
-wmName.BackgroundTransparency=1 wmName.Text="PrimDLC v16.1" wmName.TextSize=14
+wmName.BackgroundTransparency=1 wmName.Text="PrimDLC v16.2" wmName.TextSize=14
 wmName.Font=Enum.Font.GothamBold wmName.TextColor3=T1.text
 wmName.TextXAlignment=Enum.TextXAlignment.Left wmName.ZIndex=71
 local d1=Instance.new("Frame",wmFrame)
@@ -626,7 +626,7 @@ pcall(function()
 local chat=game:GetService("ReplicatedStorage"):FindFirstChild("DefaultChatSystemChatEvents")
 if chat then
 local say=chat:FindFirstChild("SayMessageRequest")
-if say then say:FireServer("PrimDLC v16.1","All")end
+if say then say:FireServer("PrimDLC v16.2","All")end
 end
 end)
 end
@@ -638,6 +638,63 @@ spawn(function()
 while true do
 task.wait(1)
 if S.FPSUnlocker then pcall(function() setfpscap(S.FPSLimit) end) end
+end
+end)
+
+-- FOV CIRCLE
+local fovCircle=Drawing.new("Circle")
+fovCircle.Thickness=1.5
+fovCircle.Filled=false
+fovCircle.NumSides=60
+fovCircle.Transparency=0.8
+fovCircle.Visible=false
+R.RenderStepped:Connect(function()
+if not S.ShowFov or not S.Aim then
+fovCircle.Visible=false
+return
+end
+local vp=Cam.ViewportSize
+fovCircle.Position=Vector2.new(vp.X/2,vp.Y/2)
+fovCircle.Radius=S.FOV/2
+fovCircle.Color=C[S.FovCol]or C.Purple
+fovCircle.Visible=true
+end)
+
+-- THIRD PERSON
+spawn(function()
+while true do
+task.wait(0.1)
+local c=LP.Character
+local hrp=c and c:FindFirstChild("HumanoidRootPart")
+if S.ThirdPerson and hrp then
+local hum=c:FindFirstChildOfClass("Humanoid")
+if hum then
+hum.CameraOffset=Vector3.new(0,0.5,S.ThirdPersonDist)
+end
+LP.CameraMaxZoomDistance=S.ThirdPersonDist+1
+LP.CameraMinZoomDistance=S.ThirdPersonDist
+else
+local hum=c and c:FindFirstChildOfClass("Humanoid")
+if hum then hum.CameraOffset=Vector3.new(0,0,0) end
+LP.CameraMaxZoomDistance=128
+LP.CameraMinZoomDistance=0.5
+end
+end
+end)
+
+-- SPIN BOT
+spawn(function()
+while true do
+task.wait(0.05)
+if S.SpinBot then
+local c=LP.Character
+local hrp=c and c:FindFirstChild("HumanoidRootPart")
+if hrp then
+local speed=S.SpinBotSpeed
+local rot=CFrame.Angles(0,math.rad(tick()*speed*36),0)
+hrp.CFrame=CFrame.new(hrp.Position)*rot
+end
+end
 end
 end)
 
@@ -836,7 +893,7 @@ end
 end
 end)
 
--- AUTO DODGE (fixed - плавный + проверка стен)
+-- AUTO DODGE
 local lastDodge=0
 R.Heartbeat:Connect(function()
 if not S.AutoDodge then return end
@@ -1261,7 +1318,7 @@ if S.Time then L.ClockTime=S.TimeV end
 end
 end)
 
--- HIT SOUND + KILL SOUND (FIXED)
+-- HIT SOUND + KILL SOUND
 local watchedHum={}
 local function watchHumanoid(p,h)
 if p==LP or not h or watchedHum[h] then return end
@@ -1586,7 +1643,8 @@ elseif AR[p]then AR[p].Visible=false end
 elseif AR[p]then AR[p].Visible=false end
 if S.Beam then
 if not BM[p]then BM[p]=Drawing.new("Line")BM[p].Thickness=1.5 BM[p].Color=Color3.fromRGB(255,100,200)BM[p].Transparency=.7 end
-local vp=Cam.ViewportSizelocal tS=Cam:WorldToViewportPoint(hrp.Position)
+local vp=Cam.ViewportSize
+local tS=Cam:WorldToViewportPoint(hrp.Position)
 BM[p].From=Vector2.new(vp.X/2,vp.Y-30)BM[p].To=Vector2.new(tS.X,tS.Y)BM[p].Visible=true
 elseif BM[p]then BM[p].Visible=false end
 if o1 and o2 then
@@ -1645,7 +1703,7 @@ HPB[p]=Drawing.new("Square")HPB[p].Thickness=1 HPB[p].Filled=true
 end
 local hp=hum.Health/hum.MaxHealth
 HPG[p].Size=Vector2.new(3,h)HPG[p].Position=Vector2.new(bx-6,tp.Y)HPG[p].Visible=true
-HPB[p].Size=Vector3.new(3,h*hp)HPB[p].Position=Vector2.new(bx-6,tp.Y+h*(1-hp))
+HPB[p].Size=Vector2.new(3,h*hp)HPB[p].Position=Vector2.new(bx-6,tp.Y+h*(1-hp))
 HPB[p].Color=Color3.fromRGB(math.floor(255*(1-hp)),math.floor(255*hp),60)HPB[p].Visible=true
 else
 if HPB[p]then HPB[p].Visible=false end
@@ -1669,4 +1727,4 @@ if HD[p]then HD[p]:Remove()end if AR[p]then AR[p]:Remove()end if BM[p]then BM[p]
 if SK[p]then for _,l in pairs(SK[p])do l:Remove()end end
 if CH[p]then for _,cc in pairs(CH[p])do cc:Destroy()end end
 end)
-print("[v16.1 PrimDLC] @LutshiyKot loaded!")
+print("[v16.2 PrimDLC] @LutshiyKot loaded!")
