@@ -31,8 +31,7 @@ NoRecoil=false,NoSpread=false,FastReload=false,
 AutoParry=false,AutoParryRange=8,AutoParryKey="F",
 Theme="Purple",
 EmoteSpam=false,ChatSpam=false,
-AimTargetMode="Closest",AimIgnoreFriends=false,AimStickyAim=false,AimHoldDelay=0,
-FakeSilent=false,
+AutoRejoin=false,
 }
 local C={Purple=Color3.fromRGB(180,100,255),Red=Color3.fromRGB(255,80,80),Blue=Color3.fromRGB(80,150,255),
 Green=Color3.fromRGB(80,255,120),Yellow=Color3.fromRGB(255,220,80),White=Color3.fromRGB(255,255,255),
@@ -87,7 +86,7 @@ wmMoon.Font=Enum.Font.GothamBold wmMoon.TextColor3=T1.text
 wmMoon.TextXAlignment=Enum.TextXAlignment.Left wmMoon.ZIndex=71
 local wmName=Instance.new("TextLabel",wmFrame)
 wmName.Size=UDim2.new(0,80,1,0)wmName.Position=UDim2.new(0,32,0,0)
-wmName.BackgroundTransparency=1 wmName.Text="PrimDLC v16" wmName.TextSize=14
+wmName.BackgroundTransparency=1 wmName.Text="PrimDLC v15" wmName.TextSize=14
 wmName.Font=Enum.Font.GothamBold wmName.TextColor3=T1.text
 wmName.TextXAlignment=Enum.TextXAlignment.Left wmName.ZIndex=71
 local d1=Instance.new("Frame",wmFrame)
@@ -356,29 +355,16 @@ end)
 return{btn=b,lbl=l,bs=bs,callback=cb}
 end
 
-local HSnd={
-Click="rbxassetid://6042053626",
-Bell="rbxassetid://5582802889",
-Minecraft="rbxassetid://5766634100",
-Pew="rbxassetid://3744371097",
-Bubble="rbxassetid://3744368002",
-}
-local KSnd={
-Explosion="rbxassetid://5801257793",
-Ding="rbxassetid://5640909526",
-Bruh="rbxassetid://3744374125",
-Vine="rbxassetid://5410086224",
-Sniper="rbxassetid://5793766021",
-}
-
+local HSnd={Click="rbxassetid://6895079853",Bell="rbxassetid://6042054027",Minecraft="rbxassetid://6042054196",Pew="rbxassetid://6042054652",Bubble="rbxassetid://6042054764"}
+local KSnd={Explosion="rbxassetid://153467001",Ding="rbxassetid://4590662766",Bruh="rbxassetid://6042055494",Vine="rbxassetid://6042055656",Sniper="rbxassetid://6042055794"}
+local soundHolder=Instance.new("Folder",gui)
+soundHolder.Name="SoundHolder"
 local function pSnd(id,v)
 if not id or id=="" then return end
 local s=Instance.new("Sound")
-s.SoundId=id
-s.Volume=v or 1
-s.Parent=game:GetService("SoundService")
+s.SoundId=id s.Volume=v or 1 s.Parent=soundHolder
 pcall(function() s:Play() end)
-task.delay(5,function() pcall(function() s:Destroy() end) end)
+D:AddItem(s,5)
 end
 
 -- ВКЛАДКИ
@@ -389,7 +375,6 @@ mkC("Prediction",S.Pred,function(v)S.Pred=v end)mkC("Wall Check",S.VisChk,functi
 mkSec("ESP")mkC("ESP",S.ESP,function(v)S.ESP=v end)mkC("Box",S.Box,function(v)S.Box=v end)
 mkC("Highlight",S.HL,function(v)S.HL=v end)mkC("Target ESP",S.TgtE,function(v)S.TgtE=v end)mkC("Chams",S.Chams,function(v)S.Chams=v end)
 end))
-
 table.insert(tabs,mkT("Legit","🕊",function()
 clr()
 mkSec("Aim Assist (Legit)")
@@ -408,7 +393,6 @@ mkSec("Auto Parry")
 mkC("Enable Auto Parry",S.AutoParry,function(v)S.AutoParry=v end)
 mkSl("Parry Range",3,20,S.AutoParryRange,function(v)S.AutoParryRange=v end)
 end))
-
 table.insert(tabs,mkT("Target","🎯",function()
 clr()
 mkSec("Target ESP (CS Style)")
@@ -417,7 +401,6 @@ mkC("HP",S.TgtHP,function(v)S.TgtHP=v end)mkC("Distance",S.TgtDist,function(v)S.
 mkC("Only Locked",S.TgtLock,function(v)S.TgtLock=v end)
 mkSec("Style")mkDr("Color",{"Red","Yellow","Green","Cyan","White","Purple"},S.TgtCol,function(v)S.TgtCol=v end)
 end))
-
 table.insert(tabs,mkT("Aim","⚔",function()
 clr()
 mkSec("Aimbot")mkC("Aimbot",S.Aim,function(v)S.Aim=v end)mkC("Prediction",S.Pred,function(v)S.Pred=v end)
@@ -426,14 +409,7 @@ mkSec("Target")mkDr("Hit Part",{"Head","UpperTorso","LowerTorso","HumanoidRootPa
 mkDr("FOV Color",{"Purple","Red","Blue","Green","Yellow","White","Pink","Cyan","Orange"},S.FovCol,function(v)S.FovCol=v end)
 mkSl("FOV",50,800,S.FOV,function(v)S.FOV=v end)mkSl("Smooth",0,95,S.Smooth*100,function(v)S.Smooth=v/100 end)
 mkSl("Max Dist",50,2000,S.MaxD,function(v)S.MaxD=v end)
-mkSec("Advanced Aim")
-mkDr("Target Mode",{"Closest","Lowest HP","Highest HP","Nearest"},S.AimTargetMode,function(v)S.AimTargetMode=v end)
-mkC("Ignore Friends",S.AimIgnoreFriends,function(v)S.AimIgnoreFriends=v end)
-mkC("Sticky Aim",S.AimStickyAim,function(v)S.AimStickyAim=v end)
-mkSl("Hold Delay ms",0,500,S.AimHoldDelay,function(v)S.AimHoldDelay=v end)
-mkC("Fake Silent Aim (Camera Lock)",S.FakeSilent,function(v)S.FakeSilent=v end)
 end))
-
 table.insert(tabs,mkT("Visual","🎨",function()
 clr()
 mkSec("ESP")mkC("ESP",S.ESP,function(v)S.ESP=v end)mkC("Box",S.Box,function(v)S.Box=v end)
@@ -450,7 +426,6 @@ mkDr("Crosshair Style",{"Dot","Cross","Circle","X"},S.CrossSty,function(v)S.Cros
 mkSec("Watermark")mkC("Show Watermark",S.WM,function(v)wmFrame.Visible=v end)
 mkC("FPS",S.FPS,function(v)S.FPS=v end)mkC("Ping",S.Ping,function(v)S.Ping=v end)
 end))
-
 table.insert(tabs,mkT("FX","✨",function()
 clr()
 mkSec("Weather")mkC("Snow",S.Snow,function(v)S.Snow=v end)
@@ -464,7 +439,6 @@ mkC("Color Correction",S.CC,function(v)S.CC=v end)
 mkDr("CC Mode",{"None","Red","Blue","Green","Matrix","Cinematic"},S.CCM,function(v)S.CCM=v end)
 mkC("Sun Rays",S.SunR,function(v)S.SunR=v end)mkC("Atmosphere",S.Atm,function(v)S.Atm=v end)
 end))
-
 table.insert(tabs,mkT("ExtraV","💠",function()
 clr()
 mkSec("FPS")mkC("FPS Unlocker",S.FPSUnlocker,function(v)S.FPSUnlocker=v end)
@@ -478,7 +452,17 @@ mkC("Hit Marker",S.HitMarker,function(v)S.HitMarker=v end)
 mkC("Kill Feed",S.KillFeed,function(v)S.KillFeed=v end)
 mkSec("Hat")mkDr("Hat Type",{"China","Tophat","Crown","Halo"},S.HatType,function(v)S.HatType=v end)
 end))
-
+table.insert(tabs,mkT("Game","🎮",function()
+clr()
+mkSec("Blade Ball")mkC("Auto Parry",S.BladeBallParry,function(v)S.BladeBallParry=v end)
+mkSec("BedWars")mkC("Auto Bed Break",S.BedWarsAuto,function(v)S.BedWarsAuto=v end)
+mkSec("Arsenal")mkC("Auto Fire",S.ArsenalAuto,function(v)S.ArsenalAuto=v end)
+mkSec("Jailbreak")mkC("Auto Rob",S.JailbreakAuto,function(v)S.JailbreakAuto=v end)
+mkSec("Pet Sim")mkC("Auto Collect",S.PetSimAuto,function(v)S.PetSimAuto=v end)
+mkSec("Blox Fruits")mkC("Auto Farm",S.BloxFruitsAuto,function(v)S.BloxFruitsAuto=v end)
+mkSec("Spam")mkC("Emote Spam",S.EmoteSpam,function(v)S.EmoteSpam=v end)
+mkC("Chat Spam",S.ChatSpam,function(v)S.ChatSpam=v end)
+end))
 table.insert(tabs,mkT("Theme","🌈",function()
 clr()
 mkSec("UI Theme")
@@ -513,10 +497,10 @@ t.lbl.TextColor3=T2.text
 t.bs.Color=T2.accent
 t.bs.Transparency=.6
 end
-if tabs[8] then
-tabs[8].btn.BackgroundColor3=T2.accent
-tabs[8].lbl.TextColor3=Color3.fromRGB(255,255,255)
-tabs[8].bs.Transparency=0
+if tabs[10] then
+tabs[10].btn.BackgroundColor3=T2.accent
+tabs[10].lbl.TextColor3=Color3.fromRGB(255,255,255)
+tabs[10].bs.Transparency=0
 end
 for _,el in pairs(CT:GetChildren())do
 if el:IsA("TextButton")then
@@ -540,7 +524,6 @@ end)
 mkSec("Behavior")
 mkC("Auto Hide Menu",S.AutoHide,function(v)S.AutoHide=v end)
 end))
-
 table.insert(tabs,mkT("Sound","🔊",function()
 clr()
 mkSec("Hit Sound")mkC("Enable Hit Sound",S.HSnd,function(v)S.HSnd=v end)
@@ -553,7 +536,6 @@ mkSec("Particle Aura")mkC("Enable Aura",S.Aura,function(v)S.Aura=v end)
 mkDr("Aura Type",{"Fire","Sparkle","Lightning","Snow","Neon","Rainbow"},S.AuraT,function(v)S.AuraT=v end)
 mkSl("Aura Rate",5,100,S.AuraR,function(v)S.AuraR=v end)
 end))
-
 table.insert(tabs,mkT("Extras","⚡",function()
 clr()
 mkSec("Lighting")mkC("Fullbright",S.FB,function(v)
@@ -588,7 +570,6 @@ mkSl("Walk Speed",16,200,S.Spd,function(v)S.Spd=v local h=LP.Character and LP.Ch
 mkSl("Jump Power",50,300,S.Jmp,function(v)S.Jmp=v local h=LP.Character and LP.Character:FindFirstChildOfClass("Humanoid")if h then h.JumpPower=v end end)
 mkSl("Fly Speed",10,300,S.FlyS,function(v)S.FlyS=v end)
 end))
-
 table.insert(tabs,mkT("Player","👤",function()
 clr()
 mkSec("Utility")mkB2("🔄 RESET",function()local c=LP.Character if c then local h=c:FindFirstChildOfClass("Humanoid")if h then h.Health=0 end end end)
@@ -643,7 +624,7 @@ pcall(function()
 local chat=game:GetService("ReplicatedStorage"):FindFirstChild("DefaultChatSystemChatEvents")
 if chat then
 local say=chat:FindFirstChild("SayMessageRequest")
-if say then say:FireServer("PrimDLC v16","All")end
+if say then say:FireServer("PrimDLC v15","All")end
 end
 end)
 end
@@ -655,6 +636,125 @@ spawn(function()
 while true do
 task.wait(1)
 if S.FPSUnlocker then pcall(function() setfpscap(S.FPSLimit) end) end
+end
+end)
+
+-- BLADE BALL
+spawn(function()
+while true do
+task.wait(0.05)
+if S.BladeBallParry then
+pcall(function()
+local ball=workspace:FindFirstChild("Ball")
+local c=LP.Character
+if c and ball then
+local hrp=c:FindFirstChild("HumanoidRootPart")
+if hrp and(ball.Position-hrp.Position).Magnitude<15 then
+local tool=c:FindFirstChildOfClass("Tool")
+if tool then tool:Activate()end
+end
+end
+end)
+end
+end
+end)
+
+-- BEDWARS AUTO BED
+spawn(function()
+while true do
+task.wait(0.3)
+if S.BedWarsAuto then
+pcall(function()
+local c=LP.Character
+if not c then return end
+local hrp=c:FindFirstChild("HumanoidRootPart")
+if not hrp then return end
+for _,obj in pairs(workspace:GetDescendants())do
+if obj.Name:lower():find("bed")and obj:IsA("BasePart")then
+if(obj.Position-hrp.Position).Magnitude<8 then
+local tool=c:FindFirstChildOfClass("Tool")
+if tool then tool:Activate()end
+end
+end
+end
+end)
+end
+end
+end)
+
+-- ARSENAL AUTO
+spawn(function()
+while true do
+task.wait(0.1)
+if S.ArsenalAuto then
+local c=LP.Character
+if c then
+local tool=c:FindFirstChildOfClass("Tool")
+if tool then
+local mouse=LP:GetMouse()
+if mouse.Target and mouse.Target.Parent~=c then
+local hum=mouse.Target.Parent:FindFirstChildOfClass("Humanoid")
+if hum and hum.Health>0 then pcall(function() tool:Activate()end)end
+end
+end
+end
+end
+end
+end)
+
+-- JAILBREAK AUTO ROB
+spawn(function()
+while true do
+task.wait(0.5)
+if S.JailbreakAuto then
+pcall(function()
+local c=LP.Character
+if not c then return end
+local hrp=c:FindFirstChild("HumanoidRootPart")
+if not hrp then return end
+for _,obj in pairs(workspace:GetDescendants())do
+if obj:IsA("BasePart")and(obj.Name:lower():find("cash")or obj.Name:lower():find("jewel"))then
+if(obj.Position-hrp.Position).Magnitude<100 then hrp.CFrame=CFrame.new(obj.Position+Vector3.new(0,3,0))end
+end
+end
+end)
+end
+end
+end)
+
+-- PET SIM AUTO COLLECT
+spawn(function()
+while true do
+task.wait(0.5)
+if S.PetSimAuto then
+pcall(function()
+local c=LP.Character
+if not c then return end
+local hrp=c:FindFirstChild("HumanoidRootPart")
+if not hrp then return end
+for _,obj in pairs(workspace:GetDescendants())do
+if obj:IsA("BasePart")and(obj.Name:lower():find("coin")or obj.Name:lower():find("egg"))then
+if(obj.Position-hrp.Position).Magnitude<150 then hrp.CFrame=CFrame.new(obj.Position+Vector3.new(0,5,0))end
+end
+end
+end)
+end
+end
+end)
+
+-- BLOX FRUITS
+spawn(function()
+while true do
+task.wait(1)
+if S.BloxFruitsAuto then
+pcall(function()
+local c=LP.Character
+if c then
+local tool=c:FindFirstChildOfClass("Tool")
+if tool then tool:Activate()end
+end
+end)
+end
 end
 end)
 
@@ -684,12 +784,11 @@ end)
 -- KILL AURA
 spawn(function()
 while true do
-task.wait(0.2)
+task.wait(0.1)
 if S.KillAura then
 local c=LP.Character
 if c then
 local hrp=c:FindFirstChild("HumanoidRootPart")
-local tool=c:FindFirstChildOfClass("Tool")
 if hrp then
 for _,p in pairs(P:GetPlayers())do
 if p==LP then continue end
@@ -698,15 +797,7 @@ if t then
 local th=t:FindFirstChildOfClass("Humanoid")
 local thrp=t:FindFirstChild("HumanoidRootPart")
 if th and thrp and th.Health>0 and(hrp.Position-thrp.Position).Magnitude<=S.KillAuraRange then
-if tool then
-pcall(function() tool:Activate()end)
-else
-local mouse=LP:GetMouse()
-pcall(function()
-if mouse.Target then mouse.Target:BreakJoints()end
-end)
-end
-end
+pcall(function() th.Health=th.Health-25 end)
 end
 end
 end
@@ -744,33 +835,22 @@ end
 end)
 
 -- AUTO DODGE
-spawn(function()
-while true do
-task.wait(0.3)
-if S.AutoDodge then
-local c=LP.Character
-if c then
-local hrp=c:FindFirstChild("HumanoidRootPart")
-local hum=c:FindFirstChildOfClass("Humanoid")
-if hrp and hum then
+local lastDodge=0
+R.Stepped:Connect(function()
+if not S.AutoDodge then return end
+if tick()-lastDodge<0.5 then return end
+local c=LP.Character if not c then return end
+local hrp=c:FindFirstChild("HumanoidRootPart")if not hrp then return end
 for _,p in pairs(P:GetPlayers())do
 if p==LP then continue end
 local t=p.Character
 if t then
 local thrp=t:FindFirstChild("HumanoidRootPart")
-local th=t:FindFirstChildOfClass("Humanoid")
-if thrp and th and th.Health>0 then
-local d=(hrp.Position-thrp.Position).Magnitude
-if d<S.AutoDodgeRange then
+if thrp and(hrp.Position-thrp.Position).Magnitude<S.AutoDodgeRange then
 local dir=(hrp.Position-thrp.Position).Unit
-local newPos=hrp.Position+dir*10
-pcall(function() hrp.CFrame=CFrame.new(newPos,newPos+dir) end)
-end
-end
-end
-end
-end
-end
+hrp.CFrame=hrp.CFrame+dir*8
+lastDodge=tick()
+return
 end
 end
 end
@@ -1318,7 +1398,7 @@ end
 end
 end)
 
--- WALL CHECK
+-- WALL + TARGET FINDER
 local function isV(ch,pt)
 local rp=RaycastParams.new()
 rp.FilterDescendantsInstances={LP.Character,Cam}
@@ -1327,43 +1407,25 @@ local r=workspace:Raycast(Cam.CFrame.Position,pt.Position-Cam.CFrame.Position,rp
 if r then return r.Instance:IsDescendantOf(ch)end
 return true
 end
-
--- TARGET FINDER
 local curT=nil
 local function gT()
-local targets={}
-local vp=Cam.ViewportSize
-local cen=Vector2.new(vp.X/2,vp.Y/2)
+local cl,sd=nil,S.FOV
+local vp=Cam.ViewportSize local cen=Vector2.new(vp.X/2,vp.Y/2)
 for _,p in pairs(P:GetPlayers())do
 if p==LP then continue end
 local c=p.Character if not c then continue end
 local h=c:FindFirstChildOfClass("Humanoid")if not h or h.Health<=0 then continue end
 local hrp=c:FindFirstChild("HumanoidRootPart")if not hrp then continue end
 if(Cam.CFrame.Position-hrp.Position).Magnitude>S.MaxD then continue end
-if S.AimIgnoreFriends and LP:IsFriendsWith(p.UserId)then continue end
-local part=c:FindFirstChild(S.Part)or c:FindFirstChild("Head")or hrp
-if S.VisChk and not isV(c,part)then continue end
-local sp,on=Cam:WorldToViewportPoint(part.Position)
+local pt=c:FindFirstChild(S.Part)or c:FindFirstChild("Head")or hrp
+if S.VisChk and not isV(c,pt)then continue end
+local sp,on=Cam:WorldToViewportPoint(pt.Position)
 if not on then continue end
 local d=(Vector2.new(sp.X,sp.Y)-cen).Magnitude
-if d<S.FOV then
-table.insert(targets,{part=part,dist=d,hp=h.Health,hpMax=h.MaxHealth,dist3D=(Cam.CFrame.Position-hrp.Position).Magnitude})
+if d<sd then sd=d cl=pt end
 end
+return cl
 end
-if #targets==0 then return nil end
-local best=targets[1]
-if S.AimTargetMode=="Closest"then
-for _,t in ipairs(targets)do if t.dist<best.dist then best=t end end
-elseif S.AimTargetMode=="Lowest HP"then
-for _,t in ipairs(targets)do if t.hp<best.hp then best=t end end
-elseif S.AimTargetMode=="Highest HP"then
-for _,t in ipairs(targets)do if t.hp>best.hp then best=t end end
-elseif S.AimTargetMode=="Nearest"then
-for _,t in ipairs(targets)do if t.dist3D<best.dist3D then best=t end end
-end
-return best.part
-end
-
 R:BindToRenderStep("AimLoop",Enum.RenderPriority.Camera.Value+10,function()
 if not S.Aim then curT=nil return end
 local t=gT()
@@ -1378,34 +1440,6 @@ end
 local cf=CFrame.new(Cam.CFrame.Position,tp)
 if S.Smooth>0 then Cam.CFrame=Cam.CFrame:Lerp(cf,1-S.Smooth)else Cam.CFrame=cf end
 if S.AutoS then local tl=LP.Character and LP.Character:FindFirstChildOfClass("Tool")if tl then pcall(function()tl:Activate()end)end end
-end)
-
--- FAKE SILENT AIM (Camera Lock)
-R.RenderStepped:Connect(function()
-if not S.FakeSilent then return end
-if not S.Aim then return end
-local c=LP.Character
-if not c then return end
-local closest,sd=nil,S.FOV
-local vp=Cam.ViewportSize
-local cen=Vector2.new(vp.X/2,vp.Y/2)
-for _,p in pairs(P:GetPlayers())do
-if p==LP then continue end
-local t=p.Character
-if not t then continue end
-local h=t:FindFirstChildOfClass("Humanoid")
-if not h or h.Health<=0 then continue end
-local part=t:FindFirstChild(S.Part)or t:FindFirstChild("Head")
-if not part then continue end
-local sp,on=Cam:WorldToViewportPoint(part.Position)
-if not on then continue end
-local d=(Vector2.new(sp.X,sp.Y)-cen).Magnitude
-if d<sd then sd=d closest=part end
-end
-if closest then
-local newCF=CFrame.new(Cam.CFrame.Position,closest.Position)
-Cam.CFrame=Cam.CFrame:Lerp(newCF,1-S.Smooth)
-end
 end)
 
 -- TARGET ESP
@@ -1607,4 +1641,4 @@ if HD[p]then HD[p]:Remove()end if AR[p]then AR[p]:Remove()end if BM[p]then BM[p]
 if SK[p]then for _,l in pairs(SK[p])do l:Remove()end end
 if CH[p]then for _,cc in pairs(CH[p])do cc:Destroy()end end
 end)
-print("[v16 PrimDLC] @LutshiyKot loaded!")
+print("[v15.1 PrimDLC] @LutshiyKot loaded!")
