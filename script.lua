@@ -28,12 +28,12 @@ HatType="China",
 AimAssist=false,AimAssistSmooth=0.5,AimAssistFOV=150,AimAssistPart="Head",
 TriggerBot=false,TriggerDelay=0.2,
 NoRecoil=false,NoSpread=false,FastReload=false,
+AutoParry=false,AutoParryRange=8,AutoParryKey="F",
 Theme="Purple",
 EmoteSpam=false,ChatSpam=false,
 AutoRejoin=false,
+BladeBallParry=false,BedWarsAuto=false,ArsenalAuto=false,JailbreakAuto=false,PetSimAuto=false,BloxFruitsAuto=false,
 AutoHide=false,
-AimTargetMode="Closest",AimIgnoreFriends=false,AimStickyAim=false,AimHoldDelay=0,
-FakeSilent=false,
 }
 local C={Purple=Color3.fromRGB(180,100,255),Red=Color3.fromRGB(255,80,80),Blue=Color3.fromRGB(80,150,255),
 Green=Color3.fromRGB(80,255,120),Yellow=Color3.fromRGB(255,220,80),White=Color3.fromRGB(255,255,255),
@@ -88,7 +88,7 @@ wmMoon.Font=Enum.Font.GothamBold wmMoon.TextColor3=T1.text
 wmMoon.TextXAlignment=Enum.TextXAlignment.Left wmMoon.ZIndex=71
 local wmName=Instance.new("TextLabel",wmFrame)
 wmName.Size=UDim2.new(0,80,1,0)wmName.Position=UDim2.new(0,32,0,0)
-wmName.BackgroundTransparency=1 wmName.Text="PrimDLC v17" wmName.TextSize=14
+wmName.BackgroundTransparency=1 wmName.Text="PrimDLC v16.2" wmName.TextSize=14
 wmName.Font=Enum.Font.GothamBold wmName.TextColor3=T1.text
 wmName.TextXAlignment=Enum.TextXAlignment.Left wmName.ZIndex=71
 local d1=Instance.new("Frame",wmFrame)
@@ -391,6 +391,9 @@ mkSec("Gun Mods")
 mkC("No Recoil",S.NoRecoil,function(v)S.NoRecoil=v end)
 mkC("No Spread",S.NoSpread,function(v)S.NoSpread=v end)
 mkC("Fast Reload",S.FastReload,function(v)S.FastReload=v end)
+mkSec("Auto Parry")
+mkC("Enable Auto Parry",S.AutoParry,function(v)S.AutoParry=v end)
+mkSl("Parry Range",3,20,S.AutoParryRange,function(v)S.AutoParryRange=v end)
 end))
 table.insert(tabs,mkT("Target","🎯",function()
 clr()
@@ -408,12 +411,6 @@ mkSec("Target")mkDr("Hit Part",{"Head","UpperTorso","LowerTorso","HumanoidRootPa
 mkDr("FOV Color",{"Purple","Red","Blue","Green","Yellow","White","Pink","Cyan","Orange"},S.FovCol,function(v)S.FovCol=v end)
 mkSl("FOV",50,800,S.FOV,function(v)S.FOV=v end)mkSl("Smooth",0,95,S.Smooth*100,function(v)S.Smooth=v/100 end)
 mkSl("Max Dist",50,2000,S.MaxD,function(v)S.MaxD=v end)
-mkSec("Advanced Aim")
-mkDr("Target Mode",{"Closest","Lowest HP","Highest HP","Nearest"},S.AimTargetMode,function(v)S.AimTargetMode=v end)
-mkC("Ignore Friends",S.AimIgnoreFriends,function(v)S.AimIgnoreFriends=v end)
-mkC("Sticky Aim",S.AimStickyAim,function(v)S.AimStickyAim=v end)
-mkSl("Hold Delay ms",0,500,S.AimHoldDelay,function(v)S.AimHoldDelay=v end)
-mkC("Fake Silent Aim (Camera Lock)",S.FakeSilent,function(v)S.FakeSilent=v end)
 end))
 table.insert(tabs,mkT("Visual","🎨",function()
 clr()
@@ -456,6 +453,17 @@ mkSec("Visuals")mkC("Damage Numbers",S.DamageNumbers,function(v)S.DamageNumbers=
 mkC("Hit Marker",S.HitMarker,function(v)S.HitMarker=v end)
 mkC("Kill Feed",S.KillFeed,function(v)S.KillFeed=v end)
 mkSec("Hat")mkDr("Hat Type",{"China","Tophat","Crown","Halo"},S.HatType,function(v)S.HatType=v end)
+end))
+table.insert(tabs,mkT("Game","🎮",function()
+clr()
+mkSec("Blade Ball")mkC("Auto Parry",S.BladeBallParry,function(v)S.BladeBallParry=v end)
+mkSec("BedWars")mkC("Auto Bed Break",S.BedWarsAuto,function(v)S.BedWarsAuto=v end)
+mkSec("Arsenal")mkC("Auto Fire",S.ArsenalAuto,function(v)S.ArsenalAuto=v end)
+mkSec("Jailbreak")mkC("Auto Rob",S.JailbreakAuto,function(v)S.JailbreakAuto=v end)
+mkSec("Pet Sim")mkC("Auto Collect",S.PetSimAuto,function(v)S.PetSimAuto=v end)
+mkSec("Blox Fruits")mkC("Auto Farm",S.BloxFruitsAuto,function(v)S.BloxFruitsAuto=v end)
+mkSec("Spam")mkC("Emote Spam",S.EmoteSpam,function(v)S.EmoteSpam=v end)
+mkC("Chat Spam",S.ChatSpam,function(v)S.ChatSpam=v end)
 end))
 table.insert(tabs,mkT("Theme","🌈",function()
 clr()
@@ -609,6 +617,22 @@ for _,g in ipairs(GL) do g.Visible=v end
 end
 end)
 
+-- CHAT SPAM
+spawn(function()
+while true do
+task.wait(2)
+if S.ChatSpam then
+pcall(function()
+local chat=game:GetService("ReplicatedStorage"):FindFirstChild("DefaultChatSystemChatEvents")
+if chat then
+local say=chat:FindFirstChild("SayMessageRequest")
+if say then say:FireServer("PrimDLC v16.2","All")end
+end
+end)
+end
+end
+end)
+
 -- FPS UNLOCKER
 spawn(function()
 while true do
@@ -636,14 +660,26 @@ fovCircle.Color=C[S.FovCol]or C.Purple
 fovCircle.Visible=true
 end)
 
--- THIRD PERSON (ФИКС)
-R:BindToRenderStep("ThirdPerson",Enum.RenderPriority.Camera.Value-1,function()
+-- THIRD PERSON
+spawn(function()
+while true do
+task.wait(0.1)
 local c=LP.Character
 local hrp=c and c:FindFirstChild("HumanoidRootPart")
-if not hrp or not S.ThirdPerson then return end
-local newPos=hrp.Position-Vector3.new(0,0,S.ThirdPersonDist)+Vector3.new(0,2,0)
-local look=hrp.Position+Vector3.new(0,0.5,0)
-Cam.CFrame=CFrame.new(newPos,look)
+if S.ThirdPerson and hrp then
+local hum=c:FindFirstChildOfClass("Humanoid")
+if hum then
+hum.CameraOffset=Vector3.new(0,0.5,S.ThirdPersonDist)
+end
+LP.CameraMaxZoomDistance=S.ThirdPersonDist+1
+LP.CameraMinZoomDistance=S.ThirdPersonDist
+else
+local hum=c and c:FindFirstChildOfClass("Humanoid")
+if hum then hum.CameraOffset=Vector3.new(0,0,0) end
+LP.CameraMaxZoomDistance=128
+LP.CameraMinZoomDistance=0.5
+end
+end
 end)
 
 -- SPIN BOT
@@ -658,6 +694,125 @@ local speed=S.SpinBotSpeed
 local rot=CFrame.Angles(0,math.rad(tick()*speed*36),0)
 hrp.CFrame=CFrame.new(hrp.Position)*rot
 end
+end
+end
+end)
+
+-- BLADE BALL
+spawn(function()
+while true do
+task.wait(0.05)
+if S.BladeBallParry then
+pcall(function()
+local ball=workspace:FindFirstChild("Ball")
+local c=LP.Character
+if c and ball then
+local hrp=c:FindFirstChild("HumanoidRootPart")
+if hrp and(ball.Position-hrp.Position).Magnitude<15 then
+local tool=c:FindFirstChildOfClass("Tool")
+if tool then tool:Activate()end
+end
+end
+end)
+end
+end
+end)
+
+-- BEDWARS AUTO BED
+spawn(function()
+while true do
+task.wait(0.3)
+if S.BedWarsAuto then
+pcall(function()
+local c=LP.Character
+if not c then return end
+local hrp=c:FindFirstChild("HumanoidRootPart")
+if not hrp then return end
+for _,obj in pairs(workspace:GetDescendants())do
+if obj.Name:lower():find("bed")and obj:IsA("BasePart")then
+if(obj.Position-hrp.Position).Magnitude<8 then
+local tool=c:FindFirstChildOfClass("Tool")
+if tool then tool:Activate()end
+end
+end
+end
+end)
+end
+end
+end)
+
+-- ARSENAL AUTO
+spawn(function()
+while true do
+task.wait(0.1)
+if S.ArsenalAuto then
+local c=LP.Character
+if c then
+local tool=c:FindFirstChildOfClass("Tool")
+if tool then
+local mouse=LP:GetMouse()
+if mouse.Target and mouse.Target.Parent~=c then
+local hum=mouse.Target.Parent:FindFirstChildOfClass("Humanoid")
+if hum and hum.Health>0 then pcall(function() tool:Activate()end)end
+end
+end
+end
+end
+end
+end)
+
+-- JAILBREAK AUTO ROB
+spawn(function()
+while true do
+task.wait(0.5)
+if S.JailbreakAuto then
+pcall(function()
+local c=LP.Character
+if not c then return end
+local hrp=c:FindFirstChild("HumanoidRootPart")
+if not hrp then return end
+for _,obj in pairs(workspace:GetDescendants())do
+if obj:IsA("BasePart")and(obj.Name:lower():find("cash")or obj.Name:lower():find("jewel"))then
+if(obj.Position-hrp.Position).Magnitude<100 then hrp.CFrame=CFrame.new(obj.Position+Vector3.new(0,3,0))end
+end
+end
+end)
+end
+end
+end)
+
+-- PET SIM AUTO COLLECT
+spawn(function()
+while true do
+task.wait(0.5)
+if S.PetSimAuto then
+pcall(function()
+local c=LP.Character
+if not c then return end
+local hrp=c:FindFirstChild("HumanoidRootPart")
+if not hrp then return end
+for _,obj in pairs(workspace:GetDescendants())do
+if obj:IsA("BasePart")and(obj.Name:lower():find("coin")or obj.Name:lower():find("egg"))then
+if(obj.Position-hrp.Position).Magnitude<150 then hrp.CFrame=CFrame.new(obj.Position+Vector3.new(0,5,0))end
+end
+end
+end)
+end
+end
+end)
+
+-- BLOX FRUITS
+spawn(function()
+while true do
+task.wait(1)
+if S.BloxFruitsAuto then
+pcall(function()
+local c=LP.Character
+if c then
+local tool=c:FindFirstChildOfClass("Tool")
+if tool then tool:Activate()end
+end
+end)
 end
 end
 end)
@@ -739,36 +894,38 @@ end
 end)
 
 -- AUTO DODGE
-spawn(function()
-while true do
-task.wait(0.3)
-if S.AutoDodge then
-local c=LP.Character
-if c then
-local hrp=c:FindFirstChild("HumanoidRootPart")
-local hum=c:FindFirstChildOfClass("Humanoid")
-if hrp and hum then
+local lastDodge=0
+R.Heartbeat:Connect(function()
+if not S.AutoDodge then return end
+if tick()-lastDodge<0.25 then return end
+local c=LP.Character if not c then return end
+local hrp=c:FindFirstChild("HumanoidRootPart")if not hrp then return end
+local hum=c:FindFirstChildOfClass("Humanoid")if not hum or hum.Health<=0 then return end
+local nearest,nd=nil,math.huge
 for _,p in pairs(P:GetPlayers())do
 if p==LP then continue end
 local t=p.Character
-if t then
+if not t then continue end
 local thrp=t:FindFirstChild("HumanoidRootPart")
 local th=t:FindFirstChildOfClass("Humanoid")
 if thrp and th and th.Health>0 then
 local d=(hrp.Position-thrp.Position).Magnitude
-if d<S.AutoDodgeRange then
-local dir=(hrp.Position-thrp.Position).Unit
-local newPos=hrp.Position+dir*10
-pcall(function() hrp.CFrame=CFrame.new(newPos,newPos+dir) end)
+if d<S.AutoDodgeRange and d<nd then nd=d nearest=thrp end
 end
 end
-end
-end
-end
-end
-end
-end
-end
+if not nearest then return end
+local dir=(hrp.Position-nearest.Position)
+dir=Vector3.new(dir.X,0,dir.Z)
+if dir.Magnitude<0.1 then dir=Vector3.new(1,0,0) end
+dir=dir.Unit
+local rp=RaycastParams.new()
+rp.FilterDescendantsInstances={c}
+rp.FilterType=Enum.RaycastFilterType.Exclude
+local check=workspace:Raycast(hrp.Position,dir*10,rp)
+if check then return end
+local newPos=hrp.Position+dir*7
+hrp.CFrame=CFrame.new(newPos,newPos+dir)
+lastDodge=tick()
 end)
 
 -- TRAIL
@@ -840,6 +997,36 @@ local d=(Vector2.new(sp.X,sp.Y)-cen).Magnitude
 if d<10 then
 local tool=c:FindFirstChildOfClass("Tool")
 if tool then pcall(function() tool:Activate()end)lastTrigger=tick()return end
+end
+end
+end)
+
+-- AUTO PARRY
+spawn(function()
+while true do
+task.wait(0.05)
+if S.AutoParry then
+local c=LP.Character
+if c then
+local hrp=c:FindFirstChild("HumanoidRootPart")
+if hrp then
+for _,p in pairs(P:GetPlayers())do
+if p==LP then continue end
+local t=p.Character
+if t then
+local thrp=t:FindFirstChild("HumanoidRootPart")
+if thrp and(hrp.Position-thrp.Position).Magnitude<=S.AutoParryRange then
+pcall(function()
+if U:IsKeyDown(Enum.KeyCode[S.AutoParryKey])then
+local tool=c:FindFirstChildOfClass("Tool")
+if tool then tool:Activate()end
+end
+end)
+end
+end
+end
+end
+end
 end
 end
 end)
@@ -1540,4 +1727,4 @@ if HD[p]then HD[p]:Remove()end if AR[p]then AR[p]:Remove()end if BM[p]then BM[p]
 if SK[p]then for _,l in pairs(SK[p])do l:Remove()end end
 if CH[p]then for _,cc in pairs(CH[p])do cc:Destroy()end end
 end)
-print("[v17 PrimDLC] @LutshiyKot loaded!")
+print("[v16.2 PrimDLC] @LutshiyKot loaded!")
