@@ -53,8 +53,6 @@ local HD,SK,AR,BM,CH={},{},{},{},{}
 local tabs={}
 local dmgDrawings,hitMarkerDrawings={},{}
 local kfY=0
-local playerInfoFrame=nil
-local keybindState={menu=true,key=Enum.KeyCode.RightShift}
 
 pcall(function() gui=Instance.new("ScreenGui")gui.Name="Gui"gui.ResetOnSpawn=false gui.ZIndexBehavior=Enum.ZIndexBehavior.Sibling gui.Parent=game:GetService("CoreGui") end)
 if not gui or not gui.Parent then gui=Instance.new("ScreenGui")gui.Name="Gui"gui.ResetOnSpawn=false gui.Parent=LP:WaitForChild("PlayerGui") end
@@ -201,13 +199,19 @@ local bs=Instance.new("UIStroke",b)bs.Color=T1.accent bs.Thickness=1 bs.Transpar
 b.MouseButton1Click:Connect(cb)
 end
 
-SB=Instance.new("Frame",MF)
+SB=Instance.new("ScrollingFrame",MF)
 SB.Size=UDim2.new(0,115,1,-55)SB.Position=UDim2.new(0,10,0,48)SB.BackgroundColor3=T1.bg
 SB.BackgroundTransparency=.55 SB.BorderSizePixel=0 SB.ZIndex=3
+SB.ScrollBarThickness=2
+SB.ScrollBarImageColor3=T1.accent
+SB.CanvasSize=UDim2.new(0,0,0,0)
+SB.AutomaticCanvasSize=Enum.AutomaticSize.Y
+SB.ScrollingDirection=Enum.ScrollingDirection.Y
+SB.ScrollBarImageTransparency=0.3
 Instance.new("UICorner",SB).CornerRadius=UDim.new(0,10)
 local sbs=Instance.new("UIStroke",SB)sbs.Color=T1.accent sbs.Thickness=1 sbs.Transparency=.3
 local sbl=Instance.new("UIListLayout",SB)sbl.Padding=UDim.new(0,4)
-local sbp=Instance.new("UIPadding",SB)sbp.PaddingTop=UDim.new(0,6)sbp.PaddingLeft=UDim.new(0,6)sbp.PaddingRight=UDim.new(0,6)
+local sbp=Instance.new("UIPadding",SB)sbp.PaddingTop=UDim.new(0,6)sbp.PaddingLeft=UDim.new(0,6)sbp.PaddingRight=UDim.new(0,6)sbp.PaddingBottom=UDim.new(0,6)
 
 CT=Instance.new("ScrollingFrame",MF)
 CT.Size=UDim2.new(1,-135,1,-55)CT.Position=UDim2.new(0,130,0,48)CT.BackgroundTransparency=1 CT.BorderSizePixel=0
@@ -461,8 +465,64 @@ mkC("Chat Spam",S.ChatSpam,function(v)S.ChatSpam=v end)
 end))
 table.insert(tabs,mkT("Theme","🌈",function()
 clr()
-mkSec("UI Theme")mkDr("Theme",{"Purple","Dark","Cyan","Green","Red","Matrix","Pink"},S.Theme,function(v)S.Theme=v end)
-mkSec("Behavior")mkC("Auto Hide Menu",S.AutoHide,function(v)S.AutoHide=v end)
+mkSec("UI Theme")
+mkDr("Theme",{"Purple","Dark","Cyan","Green","Red","Matrix","Pink"},S.Theme,function(v)
+S.Theme=v
+local T2=Themes[v]or Themes.Purple
+MF.BackgroundColor3=T2.bg
+GR.Color=ColorSequence.new({
+ColorSequenceKeypoint.new(0,T2.accent),
+ColorSequenceKeypoint.new(.5,T2.bg),
+ColorSequenceKeypoint.new(1,T2.accent2)})
+N1.Color=T2.accent
+N2.Color=T2.accent2
+N3.Color=T2.accent
+HD1.BackgroundColor3=T2.accent
+HF.BackgroundColor3=T2.accent
+SB.BackgroundColor3=T2.bg
+sbs.Color=T2.accent
+wmStroke.Color=T2.accent
+wmMoon.TextColor3=T2.text
+wmName.TextColor3=T2.text
+fpsTxt.TextColor3=T2.text
+pingTxt.TextColor3=T2.text
+fpsIco.BackgroundColor3=T2.accent
+pingIco.BackgroundColor3=T2.accent
+d1.BackgroundColor3=T2.accent2
+d2.BackgroundColor3=T2.accent2
+for _,g in ipairs(GL) do g.BackgroundColor3=T2.accent end
+for _,t in pairs(tabs) do
+t.btn.BackgroundColor3=T2.bg
+t.lbl.TextColor3=T2.text
+t.bs.Color=T2.accent
+t.bs.Transparency=.6
+end
+if tabs[10] then
+tabs[10].btn.BackgroundColor3=T2.accent
+tabs[10].lbl.TextColor3=Color3.fromRGB(255,255,255)
+tabs[10].bs.Transparency=0
+end
+for _,el in pairs(CT:GetChildren())do
+if el:IsA("TextButton")then
+el.BackgroundColor3=T2.bg
+for _,ch in pairs(el:GetChildren())do
+if ch:IsA("TextLabel")then ch.TextColor3=T2.text end
+if ch:IsA("UIStroke")then ch.Color=T2.accent end
+end
+elseif el:IsA("TextLabel")then
+el.TextColor3=T2.text
+elseif el:IsA("Frame")then
+el.BackgroundColor3=T2.bg
+for _,ch in pairs(el:GetChildren())do
+if ch:IsA("Frame")then ch.BackgroundColor3=T2.accent end
+if ch:IsA("TextLabel")then ch.TextColor3=T2.text end
+if ch:IsA("UIStroke")then ch.Color=T2.accent end
+end
+end
+end
+end)
+mkSec("Behavior")
+mkC("Auto Hide Menu",S.AutoHide,function(v)S.AutoHide=v end)
 end))
 table.insert(tabs,mkT("Sound","🔊",function()
 clr()
@@ -1581,4 +1641,4 @@ if HD[p]then HD[p]:Remove()end if AR[p]then AR[p]:Remove()end if BM[p]then BM[p]
 if SK[p]then for _,l in pairs(SK[p])do l:Remove()end end
 if CH[p]then for _,cc in pairs(CH[p])do cc:Destroy()end end
 end)
-print("[v15 PrimDLC] @LutshiyKot loaded!")
+print("[v15.1 PrimDLC] @LutshiyKot loaded!")
